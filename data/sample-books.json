@@ -1,0 +1,686 @@
+[
+  {
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "isbn13": "9780743273565",
+    "isbn10": "0743273567",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780743273565-L.jpg",
+    "pageCount": 180,
+    "publishedDate": "1925",
+    "genres": [
+      "Fiction",
+      "Classics"
+    ],
+    "description": "A portrait of the Jazz Age in all of its decadence and excess, Gatsby captured the spirit of the author's generation and earned itself a permanent place in American mythology.",
+    "publisher": "Scribner"
+  },
+  {
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "isbn13": "9780061120084",
+    "isbn10": "0061120081",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780061120084-L.jpg",
+    "pageCount": 336,
+    "publishedDate": "1960",
+    "genres": [
+      "Fiction",
+      "Classics"
+    ],
+    "description": "The unforgettable novel of a childhood in a sleepy Southern town and the crisis of conscience that rocked it. Through the young eyes of Scout and Jem Finch, Harper Lee explores with rich humor and unswerving honesty the irrationality of adult attitudes toward race and class in the Deep South of the 1930s.",
+    "publisher": "Harper Perennial Modern Classics"
+  },
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "isbn13": "9780451524935",
+    "isbn10": "0451524934",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780451524935-L.jpg",
+    "pageCount": 328,
+    "publishedDate": "1949",
+    "genres": [
+      "Fiction",
+      "Dystopian",
+      "Classics"
+    ],
+    "description": "Among the seminal texts of the 20th century, Nineteen Eighty-Four is a rare work that grows more haunting as its dystopian purgatory becomes more real.",
+    "publisher": "Signet Classic"
+  },
+  {
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "isbn13": "9780141439518",
+    "isbn10": "0141439513",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780141439518-L.jpg",
+    "pageCount": 432,
+    "publishedDate": "1813",
+    "genres": [
+      "Fiction",
+      "Classics",
+      "Romance"
+    ],
+    "description": "When Elizabeth Bennet first meets eligible bachelor Fitzwilliam Darcy, she thinks him arrogant and conceited; he is indifferent to her good looks and lively mind.",
+    "publisher": "Penguin Classics"
+  },
+  {
+    "title": "The Catcher in the Rye",
+    "author": "J.D. Salinger",
+    "isbn13": "9780316769488",
+    "isbn10": "0316769487",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780316769488-L.jpg",
+    "pageCount": 277,
+    "publishedDate": "1951",
+    "genres": [
+      "Fiction",
+      "Classics"
+    ],
+    "description": "The hero-Loss of Holden Caulfield has been reprinted over 35 million times and been translated into every major language in the world.",
+    "publisher": "Little, Brown and Company"
+  },
+  {
+    "title": "Beloved",
+    "author": "Toni Morrison",
+    "isbn13": "9781400033416",
+    "isbn10": "1400033411",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9781400033416-L.jpg",
+    "pageCount": 324,
+    "publishedDate": "1987",
+    "genres": [
+      "Fiction",
+      "Historical Fiction"
+    ],
+    "description": "Staring unflinchingly into the abyss of slavery, this spellbinding novel transforms history into a story as powerful as Exodus and as intimate as a lullaby.",
+    "publisher": "Vintage"
+  },
+  {
+    "title": "The Road",
+    "author": "Cormac McCarthy",
+    "isbn13": "9780307387899",
+    "isbn10": "0307387895",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780307387899-L.jpg",
+    "pageCount": 287,
+    "publishedDate": "2006",
+    "genres": [
+      "Fiction",
+      "Post-Apocalyptic"
+    ],
+    "description": "A father and his son walk alone through burned America. Nothing moves in the ravaged landscape save the ash on the wind.",
+    "publisher": "Vintage International"
+  },
+  {
+    "title": "Normal People",
+    "author": "Sally Rooney",
+    "isbn13": "9781984822185",
+    "isbn10": "1984822187",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9781984822185-L.jpg",
+    "pageCount": 273,
+    "publishedDate": "2018",
+    "genres": [
+      "Fiction",
+      "Contemporary"
+    ],
+    "description": "Connell and Marianne grow up in the same small town in rural Ireland but the similarities end there. At school, Connell is popular and well liked, while Marianne is a loner.",
+    "publisher": "Hogarth"
+  },
+  {
+    "title": "A Gentleman in Moscow",
+    "author": "Amor Towles",
+    "isbn13": "9780143110439",
+    "isbn10": "0143110438",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780143110439-L.jpg",
+    "pageCount": 462,
+    "publishedDate": "2016",
+    "genres": [
+      "Fiction",
+      "Historical Fiction"
+    ],
+    "description": "A transporting novel about a man who is ordered to spend the rest of his life inside a luxury hotel, discovering that a life lived in a small space can be as rich and complete as one experienced across continents.",
+    "publisher": "Penguin Books"
+  },
+  {
+    "title": "Circe",
+    "author": "Madeline Miller",
+    "isbn13": "9780316556347",
+    "isbn10": "0316556343",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780316556347-L.jpg",
+    "pageCount": 393,
+    "publishedDate": "2018",
+    "genres": [
+      "Fiction",
+      "Mythology",
+      "Fantasy"
+    ],
+    "description": "In the house of Helios, god of the sun and mightiest of the Titans, a daughter is born. But Circe is a strange child \u2014 not powerful like her father, nor viciously alluring like her mother.",
+    "publisher": "Little, Brown and Company"
+  },
+  {
+    "title": "Sapiens: A Brief History of Humankind",
+    "author": "Yuval Noah Harari",
+    "isbn13": "9780062316097",
+    "isbn10": "0062316095",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
+    "pageCount": 443,
+    "publishedDate": "2015",
+    "genres": [
+      "Non-Fiction",
+      "History",
+      "Science"
+    ],
+    "description": "From a renowned historian comes a groundbreaking narrative of humanity's creation and evolution that explores the ways in which biology and history have defined us.",
+    "publisher": "Harper"
+  },
+  {
+    "title": "Educated",
+    "author": "Tara Westover",
+    "isbn13": "9780399590504",
+    "isbn10": "0399590501",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780399590504-L.jpg",
+    "pageCount": 334,
+    "publishedDate": "2018",
+    "genres": [
+      "Non-Fiction",
+      "Memoir"
+    ],
+    "description": "Born to survivalists in the mountains of Idaho, Tara Westover was seventeen the first time she set foot in a classroom. Her quest for knowledge transformed her, taking her over oceans and across continents.",
+    "publisher": "Random House"
+  },
+  {
+    "title": "The Immortal Life of Henrietta Lacks",
+    "author": "Rebecca Skloot",
+    "isbn13": "9781400052189",
+    "isbn10": "1400052181",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9781400052189-L.jpg",
+    "pageCount": 381,
+    "publishedDate": "2010",
+    "genres": [
+      "Non-Fiction",
+      "Science",
+      "Biography"
+    ],
+    "description": "Her name was Henrietta Lacks, but scientists know her as HeLa. She was a poor Southern tobacco farmer who worked the same land as her slave ancestors, yet her cells \u2014 taken without her knowledge \u2014 became one of the most important tools in medicine.",
+    "publisher": "Crown"
+  },
+  {
+    "title": "Thinking, Fast and Slow",
+    "author": "Daniel Kahneman",
+    "isbn13": "9780374533557",
+    "isbn10": "0374533555",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg",
+    "pageCount": 499,
+    "publishedDate": "2011",
+    "genres": [
+      "Non-Fiction",
+      "Psychology"
+    ],
+    "description": "In this international bestseller, Daniel Kahneman, the renowned psychologist and winner of the Nobel Prize in Economics, takes us on a groundbreaking tour of the mind.",
+    "publisher": "Farrar, Straus and Giroux"
+  },
+  {
+    "title": "Born a Crime",
+    "author": "Trevor Noah",
+    "isbn13": "9780399588174",
+    "isbn10": "0399588175",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780399588174-L.jpg",
+    "pageCount": 304,
+    "publishedDate": "2016",
+    "genres": [
+      "Non-Fiction",
+      "Memoir",
+      "Humor"
+    ],
+    "description": "The compelling, inspiring, and comically sublime story of one man's coming-of-age, set during the twilight of apartheid and the tumultuous days of freedom that followed.",
+    "publisher": "Spiegel & Grau"
+  },
+  {
+    "title": "Atomic Habits",
+    "author": "James Clear",
+    "isbn13": "9780735211292",
+    "isbn10": "0735211299",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg",
+    "pageCount": 320,
+    "publishedDate": "2018",
+    "genres": [
+      "Non-Fiction",
+      "Self-Improvement"
+    ],
+    "description": "No matter your goals, Atomic Habits offers a proven framework for improving every day. James Clear reveals practical strategies that will teach you exactly how to form good habits, break bad ones, and master the tiny behaviors that lead to remarkable results.",
+    "publisher": "Avery"
+  },
+  {
+    "title": "The Body: A Guide for Occupants",
+    "author": "Bill Bryson",
+    "isbn13": "9780385539302",
+    "isbn10": "0385539304",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780385539302-L.jpg",
+    "pageCount": 464,
+    "publishedDate": "2019",
+    "genres": [
+      "Non-Fiction",
+      "Science"
+    ],
+    "description": "Bill Bryson takes us on a head-to-toe tour of the marvel that is the human body, telling the extraordinary story of our bodies and how they function.",
+    "publisher": "Doubleday"
+  },
+  {
+    "title": "Quiet: The Power of Introverts in a World That Can't Stop Talking",
+    "author": "Susan Cain",
+    "isbn13": "9780307352156",
+    "isbn10": "0307352153",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780307352156-L.jpg",
+    "pageCount": 352,
+    "publishedDate": "2012",
+    "genres": [
+      "Non-Fiction",
+      "Psychology"
+    ],
+    "description": "Susan Cain argues that we dramatically undervalue introverts and shows how much we lose in doing so.",
+    "publisher": "Broadway Books"
+  },
+  {
+    "title": "Range: Why Generalists Triumph in a Specialized World",
+    "author": "David Epstein",
+    "isbn13": "9780735214484",
+    "isbn10": "0735214484",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780735214484-L.jpg",
+    "pageCount": 352,
+    "publishedDate": "2019",
+    "genres": [
+      "Non-Fiction",
+      "Science",
+      "Psychology"
+    ],
+    "description": "Examining the world's most successful athletes, artists, musicians, inventors, forecasters and scientists, David Epstein demonstrates that in most fields generalists, not specialists, are primed to excel.",
+    "publisher": "Riverhead Books"
+  },
+  {
+    "title": "Say Nothing: A True Story of Murder and Memory in Northern Ireland",
+    "author": "Patrick Radden Keefe",
+    "isbn13": "9780385521314",
+    "isbn10": null,
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780385521314-L.jpg",
+    "pageCount": null,
+    "publishedDate": "2019",
+    "genres": [
+      "Non-Fiction",
+      "History"
+    ],
+    "description": "A masterful work of narrative nonfiction that explores one of the most devastating episodes in modern history.",
+    "publisher": "Doubleday"
+  },
+  {
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "isbn13": "9780441013593",
+    "isbn10": "0441013597",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780441013593-L.jpg",
+    "pageCount": 688,
+    "publishedDate": "1965",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "Science Fiction"
+    ],
+    "description": "Set on the desert planet Arrakis, Dune is the story of the boy Paul Atreides, heir to a noble family tasked with ruling an inhospitable world where the only thing of value is a spice capable of extending life and expanding consciousness.",
+    "publisher": "Ace Books"
+  },
+  {
+    "title": "The Left Hand of Darkness",
+    "author": "Ursula K. Le Guin",
+    "isbn13": "9780441478125",
+    "isbn10": "0441478123",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780441478125-L.jpg",
+    "pageCount": 304,
+    "publishedDate": "1969",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "Science Fiction"
+    ],
+    "description": "A groundbreaking work of science fiction, The Left Hand of Darkness tells the story of a lone human emissary to Winter, an alien world whose inhabitants can choose and change their gender.",
+    "publisher": "Ace Books"
+  },
+  {
+    "title": "Neuromancer",
+    "author": "William Gibson",
+    "isbn13": "9780441569595",
+    "isbn10": "0441569595",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780441569595-L.jpg",
+    "pageCount": 271,
+    "publishedDate": "1984",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "Science Fiction",
+      "Cyberpunk"
+    ],
+    "description": "The Matrix is a world within the world, a global consensus-hallucination, the representation of every byte of data in cyberspace.",
+    "publisher": "Ace Books"
+  },
+  {
+    "title": "The Name of the Wind",
+    "author": "Patrick Rothfuss",
+    "isbn13": "9780756404741",
+    "isbn10": "0756404746",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780756404741-L.jpg",
+    "pageCount": 662,
+    "publishedDate": "2007",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "Fantasy"
+    ],
+    "description": "Told in Kvothe's own voice, this is the tale of the magically gifted young man who grows to be the most notorious wizard his world has ever seen.",
+    "publisher": "DAW Books"
+  },
+  {
+    "title": "Project Hail Mary",
+    "author": "Andy Weir",
+    "isbn13": "9780593135204",
+    "isbn10": "0593135202",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780593135204-L.jpg",
+    "pageCount": 476,
+    "publishedDate": "2021",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "Science Fiction"
+    ],
+    "description": "Ryland Grace is the sole survivor on a desperate, last-chance mission \u2014 and if he fails, humanity and the earth itself will perish.",
+    "publisher": "Ballantine Books"
+  },
+  {
+    "title": "The Fifth Season",
+    "author": "N.K. Jemisin",
+    "isbn13": "9780316229296",
+    "isbn10": "0316229296",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780316229296-L.jpg",
+    "pageCount": 468,
+    "publishedDate": "2015",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "Fantasy"
+    ],
+    "description": "A season of endings has begun. It starts with the great red rift across the heart of the world's sole continent, spewing ash that blots out the sun.",
+    "publisher": "Orbit"
+  },
+  {
+    "title": "Piranesi",
+    "author": "Susanna Clarke",
+    "isbn13": "9781635575941",
+    "isbn10": "1635575940",
+    "coverUrl": null,
+    "pageCount": 272,
+    "publishedDate": "2020",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "Fantasy"
+    ],
+    "description": "Piranesi's house is no ordinary building: its rooms are infinite, its corridors endless, its walls are lined with thousands upon thousands of statues.",
+    "publisher": "Bloomsbury Publishing"
+  },
+  {
+    "title": "Children of Time",
+    "author": "Adrian Tchaikovsky",
+    "isbn13": "9780316452502",
+    "isbn10": "0316452505",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780316452502-L.jpg",
+    "pageCount": 600,
+    "publishedDate": "2015",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "Science Fiction"
+    ],
+    "description": "The last remnants of the human race left a dying Earth, desperate to find a new home among the stars. Following in the footsteps of their ancestors, they discover the greatest treasure of the past age \u2014 a world terraformed and ready for human life.",
+    "publisher": "Orbit"
+  },
+  {
+    "title": "The Dispossessed",
+    "author": "Ursula K. Le Guin",
+    "isbn13": "9780061054884",
+    "isbn10": "0061054887",
+    "coverUrl": null,
+    "pageCount": 387,
+    "publishedDate": "1974",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "Science Fiction"
+    ],
+    "description": "Shevek, a brilliant physicist, decides to take action. He will seek answers, question the unquestionable, and attempt to tear down the walls of hatred that have isolated his planet of anarchists from the rest of the civilized universe.",
+    "publisher": "Harper Voyager"
+  },
+  {
+    "title": "Ancillary Justice",
+    "author": "Ann Leckie",
+    "isbn13": "9780316246620",
+    "isbn10": "031624662X",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780316246620-L.jpg",
+    "pageCount": 386,
+    "publishedDate": "2013",
+    "genres": [
+      "Sci-Fi & Fantasy",
+      "Science Fiction"
+    ],
+    "description": "On a remote, icy planet, the soldier known as Breq is drawing closer to completing her quest. Once, she was the Justice of Toren \u2014 a colossal starship with an artificial intelligence linking thousands of soldiers in the service of the Radch.",
+    "publisher": "Orbit"
+  },
+  {
+    "title": "Deep Work",
+    "author": "Cal Newport",
+    "isbn13": "9781455586691",
+    "isbn10": "1455586692",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9781455586691-L.jpg",
+    "pageCount": 296,
+    "publishedDate": "2016",
+    "genres": [
+      "Self-Improvement",
+      "Productivity"
+    ],
+    "description": "Deep work is the ability to focus without distraction on a cognitively demanding task. Cal Newport flips the narrative on impact in a connected age, arguing that the ability to concentrate is becoming both increasingly valuable and increasingly rare.",
+    "publisher": "Grand Central Publishing"
+  },
+  {
+    "title": "The Psychology of Money",
+    "author": "Morgan Housel",
+    "isbn13": "9780857197689",
+    "isbn10": null,
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780857197689-L.jpg",
+    "pageCount": 256,
+    "publishedDate": "2020",
+    "genres": [
+      "Self-Improvement",
+      "Finance"
+    ],
+    "description": "Timeless lessons on wealth, greed, and happiness. Doing well with money isn't necessarily about what you know. It's about how you behave.",
+    "publisher": "Harriman House"
+  },
+  {
+    "title": "Digital Minimalism",
+    "author": "Cal Newport",
+    "isbn13": "9780525536512",
+    "isbn10": "0525536515",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780525536512-L.jpg",
+    "pageCount": 304,
+    "publishedDate": "2019",
+    "genres": [
+      "Self-Improvement",
+      "Technology"
+    ],
+    "description": "A philosophy of technology use in which you focus your online time on a small number of carefully selected and optimized activities that strongly support things you value.",
+    "publisher": "Portfolio"
+  },
+  {
+    "title": "Four Thousand Weeks: Time Management for Mortals",
+    "author": "Oliver Burkeman",
+    "isbn13": "9780374159122",
+    "isbn10": null,
+    "coverUrl": null,
+    "pageCount": 288,
+    "publishedDate": "2021",
+    "genres": [
+      "Self-Improvement",
+      "Philosophy"
+    ],
+    "description": "An enthusiastically provocative book that asks us to embrace our limits and make the most of the brief time we have.",
+    "publisher": "Farrar, Straus and Giroux"
+  },
+  {
+    "title": "Essentialism: The Disciplined Pursuit of Less",
+    "author": "Greg McKeown",
+    "isbn13": "9780804137386",
+    "isbn10": "0804137382",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780804137386-L.jpg",
+    "pageCount": 272,
+    "publishedDate": "2014",
+    "genres": [
+      "Self-Improvement",
+      "Productivity"
+    ],
+    "description": "The Way of the Essentialist isn't about getting more done in less time. It's about getting only the right things done.",
+    "publisher": "Crown Business"
+  },
+  {
+    "title": "Thinking in Bets",
+    "author": "Annie Duke",
+    "isbn13": "9780735216358",
+    "isbn10": "0735216355",
+    "coverUrl": null,
+    "pageCount": 288,
+    "publishedDate": "2018",
+    "genres": [
+      "Self-Improvement",
+      "Decision Making"
+    ],
+    "description": "Poker champion turned decision strategist Annie Duke teaches you how to get comfortable with uncertainty and make better decisions.",
+    "publisher": "Portfolio"
+  },
+  {
+    "title": "The Obstacle Is the Way",
+    "author": "Ryan Holiday",
+    "isbn13": "9781591846352",
+    "isbn10": "1591846358",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9781591846352-L.jpg",
+    "pageCount": 224,
+    "publishedDate": "2014",
+    "genres": [
+      "Self-Improvement",
+      "Philosophy",
+      "Stoicism"
+    ],
+    "description": "Ryan Holiday shows us how some of the most successful people in history \u2014 from John D. Rockefeller to Amelia Earhart \u2014 have applied Stoicism to overcome difficult or even impossible situations.",
+    "publisher": "Portfolio"
+  },
+  {
+    "title": "The Pragmatic Programmer",
+    "author": "David Thomas, Andrew Hunt",
+    "isbn13": "9780135957059",
+    "isbn10": "0135957052",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780135957059-L.jpg",
+    "pageCount": 352,
+    "publishedDate": "2019",
+    "genres": [
+      "Tech & Programming",
+      "Software Engineering"
+    ],
+    "description": "Your journey to mastery. Straight from the programming trenches, this book cuts through the increasing specialization and technicalities of modern software development to examine the core process.",
+    "publisher": "Addison-Wesley Professional"
+  },
+  {
+    "title": "Clean Code",
+    "author": "Robert C. Martin",
+    "isbn13": "9780132350884",
+    "isbn10": "0132350882",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780132350884-L.jpg",
+    "pageCount": 464,
+    "publishedDate": "2008",
+    "genres": [
+      "Tech & Programming",
+      "Software Engineering"
+    ],
+    "description": "Even bad code can function. But if code isn't clean, it can bring a development organization to its knees. Robert C. Martin presents a revolutionary paradigm with Clean Code.",
+    "publisher": "Prentice Hall"
+  },
+  {
+    "title": "Designing Data-Intensive Applications",
+    "author": "Martin Kleppmann",
+    "isbn13": "9781449373320",
+    "isbn10": "1449373321",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9781449373320-L.jpg",
+    "pageCount": 616,
+    "publishedDate": "2017",
+    "genres": [
+      "Tech & Programming",
+      "Systems Design"
+    ],
+    "description": "Data is at the center of many challenges in system design today. This book helps you navigate the diverse and fast-changing landscape of technologies for storing and processing data.",
+    "publisher": "O'Reilly Media"
+  },
+  {
+    "title": "A Philosophy of Software Design",
+    "author": "John Ousterhout",
+    "isbn13": "9781732102200",
+    "isbn10": null,
+    "coverUrl": null,
+    "pageCount": 190,
+    "publishedDate": "2018",
+    "genres": [
+      "Tech & Programming",
+      "Software Engineering"
+    ],
+    "description": "This book addresses the topic of software design: how to decompose complex software systems into modules that can be implemented relatively independently.",
+    "publisher": "Yaknyam Press"
+  },
+  {
+    "title": "Refactoring: Improving the Design of Existing Code",
+    "author": "Martin Fowler",
+    "isbn13": "9780134757599",
+    "isbn10": "0134757599",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780134757599-L.jpg",
+    "pageCount": 448,
+    "publishedDate": "2018",
+    "genres": [
+      "Tech & Programming",
+      "Software Engineering"
+    ],
+    "description": "Fully revised and updated \u2014 includes new refactorings and code examples. Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+    "publisher": "Addison-Wesley Professional"
+  },
+  {
+    "title": "The Mythical Man-Month",
+    "author": "Frederick P. Brooks Jr.",
+    "isbn13": "9780201835953",
+    "isbn10": "0201835959",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780201835953-L.jpg",
+    "pageCount": 336,
+    "publishedDate": "1975",
+    "genres": [
+      "Tech & Programming",
+      "Project Management"
+    ],
+    "description": null,
+    "publisher": "Addison-Wesley Professional"
+  },
+  {
+    "title": "Don't Make Me Think",
+    "author": "Steve Krug",
+    "isbn13": "9780321965516",
+    "isbn10": "0321965515",
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9780321965516-L.jpg",
+    "pageCount": 216,
+    "publishedDate": "2014",
+    "genres": [
+      "Tech & Programming",
+      "UX Design"
+    ],
+    "description": "Since Don't Make Me Think was first published in 2000, hundreds of thousands of Web designers and developers have relied on usability guru Steve Krug's guide to help them understand intuitive navigation and information design.",
+    "publisher": "New Riders"
+  },
+  {
+    "title": "Eloquent JavaScript",
+    "author": "Marijn Haverbeke",
+    "isbn13": null,
+    "isbn10": null,
+    "coverUrl": "https://covers.openlibrary.org/b/isbn/9781593279509-L.jpg",
+    "pageCount": null,
+    "publishedDate": "2018",
+    "genres": [
+      "Tech & Programming",
+      "JavaScript"
+    ],
+    "description": "Completely revised and updated, this best-selling introduction to programming in JavaScript focuses on writing real applications.",
+    "publisher": "No Starch Press"
+  }
+]

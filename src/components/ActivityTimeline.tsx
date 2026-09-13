@@ -32,12 +32,23 @@ export const ActivityTimeline: React.FC = () => {
   };
 
   const formatTimestamp = (iso: string) => {
-    const d = new Date(iso);
-    return d.toLocaleDateString(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
+    const then = new Date(iso).getTime();
+    const now = Date.now();
+    const diffSeconds = Math.round((now - then) / 1000);
+
+    if (diffSeconds < 60) return 'just now';
+    const minutes = Math.floor(diffSeconds / 60);
+    if (minutes < 60) return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days} day${days === 1 ? '' : 's'} ago`;
+    const weeks = Math.floor(days / 7);
+    if (weeks < 5) return `${weeks} week${weeks === 1 ? '' : 's'} ago`;
+    const months = Math.floor(days / 30);
+    if (months < 12) return `${months} month${months === 1 ? '' : 's'} ago`;
+    const years = Math.floor(days / 365);
+    return `${years} year${years === 1 ? '' : 's'} ago`;
   };
 
   return (
@@ -61,9 +72,11 @@ export const ActivityTimeline: React.FC = () => {
             className="px-3 py-1.5 text-xs font-medium rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]"
           >
             <option value="all">All Events</option>
-            <option value="finished">Finished Books</option>
+            <option value="started">Started Reading</option>
             <option value="progress">Progress Updates</option>
+            <option value="finished">Finished Books</option>
             <option value="rated">Ratings</option>
+            <option value="goal_updated">Goal Updates</option>
             <option value="added">New Additions</option>
           </select>
         </div>
@@ -91,7 +104,11 @@ export const ActivityTimeline: React.FC = () => {
                     <span className="capitalize font-medium text-[var(--color-text-secondary)]">
                       {act.type.replace('_', ' ')}
                     </span>
-                    <span>{formatTimestamp(act.timestamp)}</span>
+                    <span
+                          title={new Date(act.timestamp).toLocaleString()}
+                        >
+                          {formatTimestamp(act.timestamp)}
+                        </span>
                   </div>
 
                   {act.bookTitle && (

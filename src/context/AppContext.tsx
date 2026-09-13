@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import confetti from 'canvas-confetti';
 import { Book, Shelf, ReadingGoal, ActivityEvent, UserProfile, AccessibilitySettings, ShelfId } from '../types';
 import {
   getCurrentUser,
@@ -167,14 +166,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, []);
 
   const triggerConfetti = useCallback(() => {
-    try {
-      confetti({
-        particleCount: 70,
-        spread: 60,
-        origin: { y: 0.7 },
-        colors: ['#A8612B', '#D4A03E', '#3D7C4F', '#2C2420']
-      });
-    } catch {}
+    // Dynamically load the confetti lib so it stays out of the main bundle
+    import('canvas-confetti')
+      .then(({ default: confetti }) => {
+        confetti({
+          particleCount: 70,
+          spread: 60,
+          origin: { y: 0.7 },
+          colors: ['#A8612B', '#D4A03E', '#3D7C4F', '#2C2420']
+        });
+      })
+      .catch(() => {});
   }, []);
 
   const logActivity = useCallback((type: ActivityEvent['type'], bookTitle?: string, details?: string) => {

@@ -1,27 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
-import { LibraryOverview } from './components/LibraryOverview';
-import { ShelfView } from './components/ShelfView';
-import { YearInReview } from './components/YearInReview';
-import { ActivityTimeline } from './components/ActivityTimeline';
-import { BookDetailModal } from './components/BookDetailModal';
-import { SearchModal } from './components/SearchModal';
-import { LibrarySearchModal } from './components/LibrarySearchModal';
-import { GoodreadsImportModal } from './components/GoodreadsImportModal';
-import { ReadingCardExportModal } from './components/ReadingCardExportModal';
-import { AccessibilitySettingsModal } from './components/AccessibilitySettingsModal';
-import { AuthModal } from './components/AuthModal';
-import { LandingPage } from './components/LandingPage';
-import { LayoutDashboard, Grid, CheckCircle, X } from 'lucide-react';
+import { LayoutDashboard, Grid, CheckCircle, Loader2 } from 'lucide-react';
+
+const LandingPage = lazy(() => import('./components/LandingPage').then((m) => ({ default: m.LandingPage })));
+const LibraryOverview = lazy(() => import('./components/LibraryOverview').then((m) => ({ default: m.LibraryOverview })));
+const ShelfView = lazy(() => import('./components/ShelfView').then((m) => ({ default: m.ShelfView })));
+const YearInReview = lazy(() => import('./components/YearInReview').then((m) => ({ default: m.YearInReview })));
+const ActivityTimeline = lazy(() => import('./components/ActivityTimeline').then((m) => ({ default: m.ActivityTimeline })));
+const BookDetailModal = lazy(() => import('./components/BookDetailModal').then((m) => ({ default: m.BookDetailModal })));
+const SearchModal = lazy(() => import('./components/SearchModal').then((m) => ({ default: m.SearchModal })));
+const LibrarySearchModal = lazy(() => import('./components/LibrarySearchModal').then((m) => ({ default: m.LibrarySearchModal })));
+const GoodreadsImportModal = lazy(() => import('./components/GoodreadsImportModal').then((m) => ({ default: m.GoodreadsImportModal })));
+const ReadingCardExportModal = lazy(() => import('./components/ReadingCardExportModal').then((m) => ({ default: m.ReadingCardExportModal })));
+const AccessibilitySettingsModal = lazy(() => import('./components/AccessibilitySettingsModal').then((m) => ({ default: m.AccessibilitySettingsModal })));
+const AuthModal = lazy(() => import('./components/AuthModal').then((m) => ({ default: m.AuthModal })));
+
+const ViewFallback: React.FC = () => (
+  <div className="flex items-center justify-center py-16">
+    <Loader2 className="w-6 h-6 text-[var(--color-accent)] animate-spin" />
+  </div>
+);
 
 const MainLayout: React.FC = () => {
   const {
     user,
     activeView,
     activeShelfId,
+    selectedBook,
     toastMessage,
+    isLibrarySearchOpen,
     setIsLibrarySearchOpen,
     setSelectedBook,
     isSearchModalOpen,
@@ -84,8 +93,12 @@ const MainLayout: React.FC = () => {
   if (!user) {
     return (
       <>
-        <LandingPage />
-        <AuthModal />
+        <Suspense fallback={<ViewFallback />}>
+          <LandingPage />
+        </Suspense>
+        <Suspense fallback={null}>
+          <AuthModal />
+        </Suspense>
       </>
     );
   }
@@ -117,7 +130,8 @@ const MainLayout: React.FC = () => {
         <Navbar onToggleMobileSidebar={() => setMobileSidebarOpen(true)} />
 
         <main id="main-content" className="flex-1 overflow-y-auto px-3.5 sm:px-6 md:px-8 py-4 sm:py-6">
-          <div className="max-w-7xl mx-auto">
+          <Suspense fallback={<ViewFallback />}>
+            <div className="max-w-7xl mx-auto">
             {activeView === 'year-in-review' && <YearInReview />}
 
             {activeView === 'activity' && <ActivityTimeline />}
@@ -166,18 +180,21 @@ const MainLayout: React.FC = () => {
                 )}
               </div>
             )}
-          </div>
+            </div>
+          </Suspense>
         </main>
       </div>
 
-      {/* Global Modals */}
-      <BookDetailModal />
-      <SearchModal />
-      <LibrarySearchModal />
-      <GoodreadsImportModal />
-      <ReadingCardExportModal />
-      <AccessibilitySettingsModal />
-      <AuthModal />
+      {/* Global Modals — lazily loaded when first opened */}
+      <Suspense fallback={null}>
+        {selectedBook && <BookDetailModal />}
+        {isSearchModalOpen && <SearchModal />}
+        {isLibrarySearchOpen && <LibrarySearchModal />}
+        {isGoodreadsModalOpen && <GoodreadsImportModal />}
+        {isExportCardModalOpen && <ReadingCardExportModal />}
+        {isA11yModalOpen && <AccessibilitySettingsModal />}
+        {isAuthModalOpen && <AuthModal />}
+      </Suspense>
 
       {/* Toast Notification */}
       {toastMessage && (

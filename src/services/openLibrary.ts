@@ -31,6 +31,18 @@ export interface SearchResultItem {
 const searchCache = new Map<string, { timestamp: number; results: SearchResultItem[] }>();
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
+// Global throttle to keep us polite to the free Open Library API (~1 req/s)
+let lastRequestTime = 0;
+const RATE_LIMIT_INTERVAL_MS = 1000;
+
+function waitForRateLimitSlot(): Promise<void> {
+  const now = Date.now();
+  const waitMs = Math.max(0, lastRequestTime + RATE_LIMIT_INTERVAL_MS - now);
+  lastRequestTime = now + waitMs;
+  if (waitMs <= 0) return Promise.resolve();
+  return new Promise((resolve) => setTimeout(resolve, waitMs));
+}
+
 export async function searchOpenLibrary(query: string): Promise<SearchResultItem[]> {
   const trimmed = query.trim();
   if (!trimmed) return [];
@@ -51,6 +63,8 @@ export async function searchOpenLibrary(query: string): Promise<SearchResultItem
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 9000);
+
+  await waitForRateLimitSlot();
 
   try {
     const response = await fetch(searchUrl, {

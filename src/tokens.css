@@ -188,3 +188,32 @@
   --color-text-tertiary: #d8d0c7;
   --color-accent: #f59e0b;
 }
+
+/* Accessibility overrides — toggled via class names from AppContext */
+html.a11y-font-large {
+  font-size: 112.5% !important;
+}
+
+html.a11y-font-larger {
+  font-size: 125% !important;
+}
+
+html.a11y-line-relaxed {
+  line-height: 1.75 !important;
+}
+
+html.a11y-line-loose {
+  line-height: 1.9 !important;
+}
+
+html.font-dyslexic {
+  --font-sans: 'OpenDyslexic', 'Comic Sans MS', sans-serif;
+}
+
+/* Motion preference — class toggled from AppContext's "Reduce motion" toggle */
+html.motion-reduce *,
+html.motion-reduce *::before,
+html.motion-reduce *::after {
+  transition-duration: 0s !important;
+  animation-duration: 0s !important;
+}

@@ -207,10 +207,10 @@ git clone [your-repo-url]
 cd bookshelf
 
 # Install dependencies
-npm install
+pnpm install
 
 # Run the development server
-npm run dev
+pnpm dev
 ```
 
 Then open `http://localhost:3000` — click **Try as Guest** to start with the curated 45-book library.

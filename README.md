@@ -4,7 +4,7 @@ A personal reading tracker where you search for books, organize them into shelve
 
 **Live URL:** https://personal-reading-list-sage.vercel.app
 
-![Screenshot of your solution](./screenshot.png)
+![Screenshot of your solution](./screenshot.jpg)
 
 ---
 

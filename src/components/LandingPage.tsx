@@ -1,13 +1,16 @@
-import React from 'react';
-import { BookOpen, Sparkles, Compass, ShieldCheck, ArrowRight, Star, TrendingUp, Layers, CheckCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { BookOpen, Sparkles, Compass, ShieldCheck, ArrowRight, Star, TrendingUp, Layers, CheckCircle, Menu, X } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { BookCover } from './BookCover';
 import { RAW_SAMPLE_BOOKS } from '../data/sampleBooksData';
 
 export const LandingPage: React.FC = () => {
   const { loginAsGuest, setIsAuthModalOpen } = useApp();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const previewBooks = RAW_SAMPLE_BOOKS.slice(0, 7);
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <div id="landing-page" className="min-h-screen flex flex-col justify-between bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
@@ -22,7 +25,7 @@ export const LandingPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3">
           <button
             onClick={loginAsGuest}
             className="px-4 py-2 text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] rounded-lg hover:bg-[var(--color-bg-secondary)] transition-colors"
@@ -36,7 +39,39 @@ export const LandingPage: React.FC = () => {
             Sign Up
           </button>
         </div>
+
+        <button
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-expanded={menuOpen}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
+        >
+          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </header>
+
+      {menuOpen && (
+        <nav aria-label="Primary" className="md:hidden w-full max-w-7xl mx-auto px-6 pb-5 flex flex-col gap-2.5 border-b border-[var(--color-border)]">
+          <button
+            onClick={() => {
+              closeMenu();
+              loginAsGuest();
+            }}
+            className="w-full px-4 py-3 rounded-xl text-sm font-semibold text-[var(--color-text-primary)] border border-[var(--color-border)] hover:bg-[var(--color-bg-secondary)] transition-colors"
+          >
+            Try as Guest
+          </button>
+          <button
+            onClick={() => {
+              closeMenu();
+              setIsAuthModalOpen(true);
+            }}
+            className="w-full px-4 py-3 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hover)] transition-all shadow-xs"
+          >
+            Sign Up
+          </button>
+        </nav>
+      )}
 
       {/* Hero Section */}
       <main className="w-full max-w-5xl mx-auto px-6 pt-12 pb-20 text-center flex flex-col items-center">

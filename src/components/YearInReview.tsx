@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Trophy, Calendar, BookOpen, Star, Sparkles, Share2, Flame, Award, Clock, ArrowUpRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { BookCover } from './BookCover';
 
 export const YearInReview: React.FC = () => {
   const { books, readingGoal, setIsExportCardModalOpen, setSelectedBook } = useApp();
-  const [selectedYear, setSelectedYear] = useState<number>(2026);
+  const [selectedYear, setSelectedYear] = useState<number>(() => new Date().getFullYear());
 
-  // Filter books read in the selected year (or completed)
+  // Years with at least one finished book, plus the current year
+  const availableYears = useMemo(() => {
+    const years = new Set<number>([new Date().getFullYear()]);
+    books.forEach((b) => {
+      if (b.dateRead) {
+        const year = parseInt(b.dateRead.slice(0, 4), 10);
+        if (!isNaN(year)) years.add(year);
+      }
+    });
+    return Array.from(years).sort((a, b) => b - a);
+  }, [books]);
+
+  // Only include books actually finished in the selected year
   const readBooks = books.filter((b) => {
     const isFinished = b.shelfId === 'read' || b.shelfId === 'favorites';
     if (!isFinished) return false;
-    if (b.dateRead && b.dateRead.startsWith(selectedYear.toString())) {
-      return true;
-    }
-    // Fallback if year matches
-    return selectedYear === 2026;
+    return !!b.dateRead && b.dateRead.startsWith(selectedYear.toString());
   });
 
   const totalBooks = readBooks.length;
@@ -23,7 +31,7 @@ export const YearInReview: React.FC = () => {
   const ratedBooks = readBooks.filter((b) => b.rating && b.rating > 0);
   const averageRating = ratedBooks.length > 0
     ? (ratedBooks.reduce((acc, b) => acc + (b.rating || 0), 0) / ratedBooks.length).toFixed(1)
-    : '4.2';
+    : null;
 
   // Longest and shortest book
   const sortedByPages = [...readBooks].filter(b => b.pageCount).sort((a, b) => (b.pageCount || 0) - (a.pageCount || 0));
@@ -42,10 +50,6 @@ export const YearInReview: React.FC = () => {
           monthlyCounts[m]++;
         }
       }
-    } else {
-      // distribute nicely
-      const hash = Math.abs(b.title.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)) % 9;
-      monthlyCounts[hash]++;
     }
   });
 
@@ -83,6 +87,21 @@ export const YearInReview: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            <div className="relative inline-flex items-center">
+              <Calendar className="w-4 h-4 absolute left-3 text-amber-300/70 pointer-events-none" />
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                aria-label="Select review year"
+                className="pl-9 pr-3 py-2.5 rounded-xl bg-white/10 backdrop-blur-md text-xs sm:text-sm font-semibold text-amber-100 border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-400/50 appearance-none cursor-pointer"
+              >
+                {availableYears.map((year) => (
+                  <option key={year} value={year} className="text-stone-900">
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
             <button
               onClick={() => setIsExportCardModalOpen(true)}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-text)] text-xs sm:text-sm font-semibold hover:bg-[var(--color-accent-hover)] transition-all shadow-lg hover:shadow-xl hover:scale-102"
@@ -131,10 +150,12 @@ export const YearInReview: React.FC = () => {
             <Star className="w-4 h-4 text-[var(--color-rating)] fill-[var(--color-rating)]" />
           </div>
           <p className="font-heading text-3xl font-bold text-[var(--color-text-primary)]">
-            {averageRating}
+            {averageRating ?? '—'}
           </p>
           <p className="text-[11px] text-[var(--color-text-secondary)] mt-1">
-            {topRated.length} books awarded 5 stars
+            {averageRating
+              ? `${topRated.length} books awarded 5 stars`
+              : 'No ratings yet'}
           </p>
         </div>
 
@@ -252,9 +273,10 @@ export const YearInReview: React.FC = () => {
       {/* Book Records: Longest Book & Shortest Book */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {longestBook && (
-          <div
+          <button
+            type="button"
             onClick={() => setSelectedBook(longestBook)}
-            className="p-5 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center gap-4 cursor-pointer hover:border-[var(--color-accent)] transition-colors group shadow-xs"
+            className="w-full text-left p-5 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center gap-4 hover:border-[var(--color-accent)] transition-colors group shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:border-[var(--color-accent)]"
           >
             <BookCover
               title={longestBook.title}
@@ -262,28 +284,29 @@ export const YearInReview: React.FC = () => {
               coverUrl={longestBook.coverUrl}
               size="sm"
             />
-            <div className="min-w-0 flex-1">
+            <span className="flex-1 min-w-0">
               <span className="text-[11px] font-semibold text-[var(--color-accent)] uppercase tracking-wider">
                 Longest Book Read
               </span>
-              <h3 className="font-heading font-semibold text-base text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors truncate">
+              <span className="block font-heading font-semibold text-base text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors truncate">
                 {longestBook.title}
-              </h3>
-              <p className="text-xs text-[var(--color-text-secondary)] truncate">
+              </span>
+              <span className="block text-xs text-[var(--color-text-secondary)] truncate">
                 {longestBook.author}
-              </p>
-              <p className="text-xs font-mono text-[var(--color-text-tertiary)] mt-1">
+              </span>
+              <span className="block text-xs font-mono text-[var(--color-text-tertiary)] mt-1">
                 {longestBook.pageCount} pages
-              </p>
-            </div>
-            <ArrowUpRight className="w-5 h-5 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)]" />
-          </div>
+              </span>
+            </span>
+            <ArrowUpRight className="w-5 h-5 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] flex-shrink-0" />
+          </button>
         )}
 
         {shortestBook && (
-          <div
+          <button
+            type="button"
             onClick={() => setSelectedBook(shortestBook)}
-            className="p-5 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center gap-4 cursor-pointer hover:border-[var(--color-accent)] transition-colors group shadow-xs"
+            className="w-full text-left p-5 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center gap-4 hover:border-[var(--color-accent)] transition-colors group shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:border-[var(--color-accent)]"
           >
             <BookCover
               title={shortestBook.title}
@@ -291,22 +314,22 @@ export const YearInReview: React.FC = () => {
               coverUrl={shortestBook.coverUrl}
               size="sm"
             />
-            <div className="min-w-0 flex-1">
+            <span className="flex-1 min-w-0">
               <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
                 Shortest Book Read
               </span>
-              <h3 className="font-heading font-semibold text-base text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors truncate">
+              <span className="block font-heading font-semibold text-base text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors truncate">
                 {shortestBook.title}
-              </h3>
-              <p className="text-xs text-[var(--color-text-secondary)] truncate">
+              </span>
+              <span className="block text-xs text-[var(--color-text-secondary)] truncate">
                 {shortestBook.author}
-              </p>
-              <p className="text-xs font-mono text-[var(--color-text-tertiary)] mt-1">
+              </span>
+              <span className="block text-xs font-mono text-[var(--color-text-tertiary)] mt-1">
                 {shortestBook.pageCount} pages
-              </p>
-            </div>
-            <ArrowUpRight className="w-5 h-5 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)]" />
-          </div>
+              </span>
+            </span>
+            <ArrowUpRight className="w-5 h-5 text-[var(--color-text-tertiary)] group-hover:text-[var(--color-accent)] flex-shrink-0" />
+          </button>
         )}
       </div>
 
@@ -326,10 +349,11 @@ export const YearInReview: React.FC = () => {
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {topRated.map((b) => (
-            <div
+            <button
               key={b.id}
+              type="button"
               onClick={() => setSelectedBook(b)}
-              className="flex flex-col items-center text-center p-3 rounded-xl hover:bg-[var(--color-bg-secondary)] cursor-pointer transition-colors"
+              className="flex flex-col items-center text-center p-3 rounded-xl hover:bg-[var(--color-bg-secondary)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
             >
               <BookCover
                 title={b.title}
@@ -338,18 +362,18 @@ export const YearInReview: React.FC = () => {
                 size="sm"
                 className="mb-2"
               />
-              <h3 className="font-heading font-semibold text-xs text-[var(--color-text-primary)] line-clamp-2">
+              <span className="block font-heading font-semibold text-xs text-[var(--color-text-primary)] line-clamp-2">
                 {b.title}
-              </h3>
-              <p className="text-[11px] text-[var(--color-text-secondary)] line-clamp-1 mt-0.5">
+              </span>
+              <span className="block text-[11px] text-[var(--color-text-secondary)] line-clamp-1 mt-0.5">
                 {b.author}
-              </p>
+              </span>
               {b.notes && (
-                <p className="text-[10px] text-[var(--color-text-tertiary)] italic line-clamp-2 mt-1">
+                <span className="block text-[10px] text-[var(--color-text-tertiary)] italic line-clamp-2 mt-1">
                   "{b.notes}"
-                </p>
+                </span>
               )}
-            </div>
+            </button>
           ))}
         </div>
       </div>

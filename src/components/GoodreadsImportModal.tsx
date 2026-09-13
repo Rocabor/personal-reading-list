@@ -26,6 +26,7 @@ export const GoodreadsImportModal: React.FC = () => {
 
   useEffect(() => {
     if (!isGoodreadsModalOpen) {
+      cancelledRef.current = true;
       setParsedResult(null);
       setFileName('');
       setShelfOverrides({});
@@ -107,6 +108,9 @@ export const GoodreadsImportModal: React.FC = () => {
     const nextChunk = () => {
       if (cancelledRef.current) {
         setIsImporting(false);
+        setParsedResult(null);
+        setFileName('');
+        setShelfOverrides({});
         showToast(`Import cancelled — ${index} of ${finalBooks.length} books were added.`);
         return;
       }

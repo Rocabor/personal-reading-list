@@ -575,31 +575,26 @@ export function getCuratedInitialBooks(): Book[] {
       percentage = 65;
       currentPage = Math.round((raw.pageCount || 496) * 0.65);
       notes = "Best sci-fi I've read in years. Funny, smart, emotional.";
-      dateRead = '2026-03-05';
     } else if (index === 11) { // Educated
       shelfId = 'currently-reading';
       percentage = 30;
       currentPage = Math.round((raw.pageCount || 352) * 0.30);
       notes = "Intense, moving memoir about family, isolation, and resilience.";
-      dateRead = '2026-03-04';
     } else if (index === 23) { // The Name of the Wind
       shelfId = 'currently-reading';
       percentage = 82;
       currentPage = Math.round((raw.pageCount || 662) * 0.82);
       notes = "Still waiting for book 3! Kvothe's story is endlessly captivating.";
-      dateRead = '2026-03-03';
     } else if (index === 30) { // Deep Work
       shelfId = 'currently-reading';
       percentage = 15;
       currentPage = Math.round((raw.pageCount || 304) * 0.15);
       notes = "Applied the time-blocking method immediately.";
-      dateRead = '2026-03-02';
     } else if (index === 9) { // Circe
       shelfId = 'currently-reading';
       percentage = 47;
       currentPage = Math.round((raw.pageCount || 393) * 0.47);
       notes = "Loving the mythological perspective and Circe's transformation.";
-      dateRead = '2026-03-01';
     } else if ([0, 1, 3, 5, 20].includes(index)) {
       // Favorites custom shelf (5 books)
       shelfId = 'favorites';

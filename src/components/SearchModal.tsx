@@ -12,6 +12,7 @@ export const SearchModal: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedShelfId, setSelectedShelfId] = useState<string>('to-read');
   const inputRef = useRef<HTMLInputElement>(null);
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
     if (isSearchModalOpen) {
@@ -36,21 +37,29 @@ export const SearchModal: React.FC = () => {
     setIsLoading(true);
     setErrorMessage(null);
 
+    const requestId = ++requestIdRef.current;
     const timer = setTimeout(async () => {
       try {
         const items = await searchOpenLibrary(trimmed);
+        if (requestIdRef.current !== requestId) return;
         setResults(items);
         if (items.length === 0) {
           setErrorMessage('No books found for that title or author. Try checking the spelling or searching by ISBN.');
         }
       } catch (err: any) {
+        if (requestIdRef.current !== requestId) return;
         setErrorMessage(err.message || 'Unable to connect to book database. Please check your internet connection.');
       } finally {
-        setIsLoading(false);
+        if (requestIdRef.current === requestId) {
+          setIsLoading(false);
+        }
       }
     }, 450);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      requestIdRef.current++;
+    };
   }, [query]);
 
   if (!isSearchModalOpen) return null;

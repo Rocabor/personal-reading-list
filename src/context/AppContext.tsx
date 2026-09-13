@@ -311,37 +311,41 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [userId, selectedBook, readingGoal, updateGoalCalculations, showToast]);
 
   const moveBookToShelf = useCallback((bookId: string, targetShelfId: string) => {
-    setBooks(prev => {
-      const book = prev.find(b => b.id === bookId);
-      if (!book) return prev;
-      const wasRead = book.shelfId === 'read' || book.shelfId === 'favorites';
-      const isNowRead = targetShelfId === 'read' || targetShelfId === 'favorites';
+    const book = books.find(b => b.id === bookId);
+    if (!book) return;
 
-      const updates: Partial<Book> = {
-        shelfId: targetShelfId
-      };
+    const wasRead = book.shelfId === 'read' || book.shelfId === 'favorites';
+    const isNowRead = targetShelfId === 'read' || targetShelfId === 'favorites';
 
-      if (isNowRead && !wasRead) {
-        updates.dateRead = new Date().toISOString().slice(0, 10);
-        updates.percentage = 100;
-        if (book.pageCount) updates.currentPage = book.pageCount;
-        updates.readCount = (book.readCount || 0) + 1;
-        triggerConfetti();
-        logActivity('finished', book.title, 'Marked as completed!');
-        showToast(`Congratulations on finishing "${book.title}"!`);
-      } else if (targetShelfId === 'currently-reading' && book.shelfId !== 'currently-reading') {
-        if (!book.currentPage) updates.currentPage = 1;
-        updates.percentage = book.pageCount ? Math.round((1 / book.pageCount) * 100) : 5;
-        logActivity('started', book.title, 'Started reading');
-        showToast(`Started reading "${book.title}"`);
-      }
+    const updates: Partial<Book> = {
+      shelfId: targetShelfId
+    };
 
-      const updated = prev.map(b => (b.id === bookId ? { ...b, ...updates } : b));
-      saveStoredBooks(userId, updated);
-      updateGoalCalculations(updated, readingGoal);
-      return updated;
-    });
-  }, [userId, triggerConfetti, logActivity, showToast, readingGoal, updateGoalCalculations]);
+    if (isNowRead && !wasRead) {
+      updates.dateRead = new Date().toISOString().slice(0, 10);
+      updates.percentage = 100;
+      if (book.pageCount) updates.currentPage = book.pageCount;
+      updates.readCount = (book.readCount || 0) + 1;
+      triggerConfetti();
+      logActivity('finished', book.title, 'Marked as completed!');
+      showToast(`Congratulations on finishing "${book.title}"!`);
+    } else if (targetShelfId === 'currently-reading' && book.shelfId !== 'currently-reading') {
+      if (!book.currentPage) updates.currentPage = 1;
+      updates.percentage = book.pageCount ? Math.round((1 / book.pageCount) * 100) : 5;
+      logActivity('started', book.title, 'Started reading');
+      showToast(`Started reading "${book.title}"`);
+    }
+
+    const updated = books.map(b => (b.id === bookId ? { ...b, ...updates } : b));
+    setBooks(updated);
+    saveStoredBooks(userId, updated);
+    updateGoalCalculations(updated, readingGoal);
+
+    // Keep the open detail modal in sync with the new shelf state
+    if (selectedBook && selectedBook.id === bookId) {
+      setSelectedBook(prev => (prev ? { ...prev, ...updates } : null));
+    }
+  }, [books, userId, selectedBook, triggerConfetti, logActivity, showToast, readingGoal, updateGoalCalculations]);
 
   const updateReadingProgress = useCallback((bookId: string, currentPage: number, totalPages?: number) => {
     // Compute percentage once so both the books state and the open modal stay in sync

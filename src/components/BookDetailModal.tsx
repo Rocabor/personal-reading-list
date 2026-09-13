@@ -30,6 +30,13 @@ export const BookDetailModal: React.FC = () => {
     }
   };
 
+  const handleClose = () => {
+    if (notes !== (selectedBook.notes || '')) {
+      updateBook(selectedBook.id, { notes });
+    }
+    setSelectedBook(null);
+  };
+
   const handleAddGenre = () => {
     const trimmed = newGenre.trim();
     if (!trimmed) return;
@@ -54,7 +61,7 @@ export const BookDetailModal: React.FC = () => {
       aria-modal="true"
       aria-labelledby="book-detail-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto"
-      onClick={() => setSelectedBook(null)}
+      onClick={handleClose}
     >
       <div
         className="relative w-full max-w-2xl bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-2xl p-6 sm:p-8 my-auto max-h-[90vh] overflow-y-auto"
@@ -63,7 +70,7 @@ export const BookDetailModal: React.FC = () => {
       >
         {/* Close Button */}
         <button
-          onClick={() => setSelectedBook(null)}
+          onClick={handleClose}
           className="absolute top-5 right-5 p-2 rounded-full text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
           aria-label="Close book details"
         >

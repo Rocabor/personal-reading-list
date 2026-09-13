@@ -1,11 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { X, Download, Share2, Sparkles, Check, BookOpen, Star } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export const ReadingCardExportModal: React.FC = () => {
   const { isExportCardModalOpen, setIsExportCardModalOpen, books, readingGoal, user, showToast } = useApp();
   const cardRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState(false);
+  useFocusTrap(dialogRef, isExportCardModalOpen);
 
   if (!isExportCardModalOpen) return null;
 
@@ -114,6 +117,7 @@ export const ReadingCardExportModal: React.FC = () => {
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="reading-card-title"

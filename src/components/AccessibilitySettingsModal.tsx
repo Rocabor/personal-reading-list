@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { X, Eye, Type, Sliders, Check } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export const AccessibilitySettingsModal: React.FC = () => {
   const { isA11yModalOpen, setIsA11yModalOpen, a11ySettings, updateA11ySettings } = useApp();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, isA11yModalOpen);
 
   if (!isA11yModalOpen) return null;
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="a11y-modal-title"

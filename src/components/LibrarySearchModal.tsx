@@ -3,6 +3,7 @@ import { Search, X, BookOpen, Star, Filter } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { Book } from '../types';
 import { BookCover } from './BookCover';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export const LibrarySearchModal: React.FC = () => {
   const { isLibrarySearchOpen, setIsLibrarySearchOpen, books, shelves, setSelectedBook } = useApp();
@@ -10,6 +11,8 @@ export const LibrarySearchModal: React.FC = () => {
   const [selectedShelf, setSelectedShelf] = useState<string>('all');
   const [selectedRating, setSelectedRating] = useState<number | 'all'>('all');
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, isLibrarySearchOpen);
 
   useEffect(() => {
     if (isLibrarySearchOpen) {
@@ -49,6 +52,7 @@ export const LibrarySearchModal: React.FC = () => {
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="library-search-title"
@@ -91,6 +95,7 @@ export const LibrarySearchModal: React.FC = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by title, author, personal notes, or genres..."
+              aria-label="Search your library"
               className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-primary)] text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
             />
             {query && (

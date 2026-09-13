@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { X, Lock, Mail, User, Sparkles, Check, ArrowRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export const AuthModal: React.FC = () => {
   const { isAuthModalOpen, setIsAuthModalOpen, loginUser, loginAsGuest, showToast } = useApp();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, isAuthModalOpen);
   const [mode, setMode] = useState<'signin' | 'signup' | 'reset'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,6 +30,7 @@ export const AuthModal: React.FC = () => {
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="auth-modal-title"

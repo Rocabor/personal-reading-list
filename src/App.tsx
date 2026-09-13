@@ -198,7 +198,11 @@ const MainLayout: React.FC = () => {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 animate-slideUp">
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 right-6 z-50 animate-slideUp"
+        >
           <div className="px-4 py-3 rounded-2xl bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-xl flex items-center gap-2.5 text-xs font-medium">
             <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>{toastMessage}</span>

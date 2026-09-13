@@ -224,7 +224,7 @@ export const ShelfView: React.FC = () => {
               <select
                 value={sortField}
                 onChange={(e) => setSortField(e.target.value as SortField)}
-                className="bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:outline-none text-xs cursor-pointer"
+                className="bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] rounded-lg text-xs cursor-pointer"
                 aria-label="Sort books"
               >
                 <option value="recent">Recent</option>
@@ -250,7 +250,7 @@ export const ShelfView: React.FC = () => {
               <select
                 value={genreFilter}
                 onChange={(e) => setGenreFilter(e.target.value)}
-                className="bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:outline-none text-xs cursor-pointer max-w-[110px] sm:max-w-none"
+                className="bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] rounded-lg text-xs cursor-pointer max-w-[110px] sm:max-w-none"
                 aria-label="Filter by genre"
               >
                 <option value="all">All Genres</option>
@@ -269,7 +269,7 @@ export const ShelfView: React.FC = () => {
                 onChange={(e) =>
                   setRatingFilter(e.target.value === 'all' ? 'all' : (parseInt(e.target.value, 10) as any))
                 }
-                className="bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:outline-none text-xs cursor-pointer"
+                className="bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] rounded-lg text-xs cursor-pointer"
                 aria-label="Filter by rating"
               >
                 <option value="all">All Ratings</option>
@@ -343,6 +343,7 @@ export const ShelfView: React.FC = () => {
               <input
                 type="text"
                 placeholder="New tag..."
+                aria-label="New tag"
                 value={bulkGenreInput}
                 onChange={(e) => setBulkGenreInput(e.target.value)}
                 className="w-20 px-2 py-1 rounded border border-[var(--color-border)] bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]"

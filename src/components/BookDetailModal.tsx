@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Star, ExternalLink, Calendar, BookOpen, Layers, Trash2, Tag, Plus, Check } from 'lucide-react';
 import { BookCover } from './BookCover';
 import { ReadingProgressBar } from './ReadingProgressBar';
 import { useApp } from '../context/AppContext';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export const BookDetailModal: React.FC = () => {
   const { selectedBook, setSelectedBook, shelves, moveBookToShelf, updateBook, removeBook } = useApp();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, !!selectedBook);
 
   const [notes, setNotes] = useState(selectedBook?.notes || '');
   const [newGenre, setNewGenre] = useState('');
@@ -57,6 +60,7 @@ export const BookDetailModal: React.FC = () => {
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="book-detail-title"
@@ -254,6 +258,7 @@ export const BookDetailModal: React.FC = () => {
                 <input
                   type="text"
                   placeholder="New genre..."
+                  aria-label="New genre"
                   value={newGenre}
                   onChange={(e) => setNewGenre(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddGenre()}

@@ -3,6 +3,7 @@ import { Search, X, Loader2, Plus, Check, BookOpen, AlertCircle } from 'lucide-r
 import { searchOpenLibrary, convertSearchResultToBook, SearchResultItem } from '../services/openLibrary';
 import { useApp } from '../context/AppContext';
 import { BookCover } from './BookCover';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export const SearchModal: React.FC = () => {
   const { isSearchModalOpen, setIsSearchModalOpen, books, addBook, shelves } = useApp();
@@ -12,7 +13,9 @@ export const SearchModal: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedShelfId, setSelectedShelfId] = useState<string>('to-read');
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const requestIdRef = useRef(0);
+  useFocusTrap(dialogRef, isSearchModalOpen);
 
   useEffect(() => {
     if (isSearchModalOpen) {
@@ -79,6 +82,7 @@ export const SearchModal: React.FC = () => {
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="search-modal-title"
@@ -113,6 +117,7 @@ export const SearchModal: React.FC = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by title, author, or ISBN (e.g. Dune, Tolkien, 9780141439518)..."
+              aria-label="Search books to add"
               className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-primary)] text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
             />
             {isLoading && (

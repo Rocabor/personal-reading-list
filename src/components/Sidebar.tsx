@@ -112,17 +112,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
       <div className="flex-1 overflow-y-auto min-h-0">
         <div className="p-4 space-y-3">
           {/* Brand Logo */}
-          <div
+          <button
+            type="button"
             onClick={() => handleNavClick('library', 'all')}
-            className="flex items-center gap-2.5 cursor-pointer select-none"
+            className="w-full flex items-center gap-2.5 text-left cursor-pointer select-none rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-secondary)]"
+            aria-label="Bookshelf home"
           >
-            <div className="w-8 h-8 rounded-lg bg-[var(--color-accent)] text-[var(--color-accent-text)] flex items-center justify-center shadow-xs">
+            <span className="w-8 h-8 rounded-lg bg-[var(--color-accent)] text-[var(--color-accent-text)] flex items-center justify-center shadow-xs">
               <BookOpen className="w-4 h-4" />
-            </div>
+            </span>
             <span className="font-heading font-bold text-lg text-[var(--color-text-primary)]">
               Bookshelf
             </span>
-          </div>
+          </button>
 
           {/* Search Shelves Input */}
           <div className="relative">
@@ -130,6 +132,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
             <input
               type="text"
               placeholder="Search shelves..."
+              aria-label="Search shelves"
               value={shelfSearchQuery}
               onChange={(e) => setShelfSearchQuery(e.target.value)}
               className="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none focus:border-[var(--color-accent)] transition-colors"
@@ -166,6 +169,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
               <input
                 type="text"
                 placeholder="Shelf name..."
+                aria-label="New shelf name"
                 value={newShelfName}
                 onChange={(e) => setNewShelfName(e.target.value)}
                 autoFocus

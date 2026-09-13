@@ -2,7 +2,7 @@
 
 A personal reading tracker where you search for books, organize them into shelves, track reading progress, and explore year-in-review statistics.
 
-**Live URL:** [pending — add your deployed URL here]
+**Live URL:** https://personal-reading-list-sage.vercel.app
 
 ---
 
@@ -20,7 +20,7 @@ Guest mode drops you in immediately with 45 curated books and complete analytics
 | Database | localStorage (client-side persistence, no backend) |
 | Authentication | Frontend-only simulated auth + guest mode |
 | Book API | Open Library Search API + cover CDN |
-| Hosting | Pending |
+| Hosting | Vercel (static deployment) |
 | Styling | Tailwind CSS v4 + custom design tokens (CSS custom properties) |
 | Charts/Viz | Hand-built SVG/CSS charts (no chart library) |
 | Other | motion (micro-interactions), lucide-react (icons), canvas-confetti, HTML Canvas (reading cards), custom Goodreads CSV parser |
@@ -95,6 +95,7 @@ How much of the "product" feeling comes from small behavioral details — the co
 | 3 | Data & state | Sample data, storage service, Open Library + Goodreads services, global context |
 | 4 | UI | Core components, views, navigation, modals, and app wiring |
 | 5 | Polish | Verification, typecheck, build, and this README |
+| 6 | Deploy | Deployed to Vercel, verified the live URL, and documented the deploy flow |
 
 ---
 
@@ -150,12 +151,12 @@ Rate your implementation honestly. This self-awareness is part of the portfolio 
 
 | Category | Rating | Notes |
 |----------|--------|-------|
-| **Works for real users** — Deployed, functional end-to-end | 4/5 | Fully functional client-side; deployment URL pending |
+| **Works for real users** — Deployed, functional end-to-end | 5/5 | Fully functional client-side and live on Vercel |
 | **Book API integration** — Handles missing covers, varied ISBNs, inconsistent metadata | 4/5 | Open Library search + cover fallback system; could enrich imported records further |
 | **Design-it-yourself features** — Quality and thoughtfulness of year-in-review, discovery, and progress tracking solutions | 4/5 | Story-driven review, guest-friendly discovery, low-effort progress logging |
 | **Design quality** — Typography pairing, warm aesthetic, spacing, visual hierarchy, polish | 4/5 | Brand kit followed; consistent tokens throughout |
 | **Responsive design** — Fully functional and well-designed across devices | 4/5 | Mobile-first grids; sidebar collapses to a navbar |
-| **Performance** — Fast load, smooth scrolling, efficient cover image loading | 4/5 | Static build, lazy covers; single JS bundle could be code-split |
+| **Performance** — Fast load, smooth scrolling, efficient cover image loading | 4/5 | Static build, route-level code-splitting, lazy covers |
 | **Accessibility** — Keyboard nav, screen reader support, contrast | 4/5 | ARIA modals, focus rings, reduced motion, accessibility settings modal |
 | **Edge case handling** — Empty states, errors, loading, missing data, large libraries | 4/5 | Cover fallbacks, import preview, empty states; large imports not paginated |
 | **Code quality** — Clean, maintainable, well-structured | 4/5 | Clear component boundaries, typed domain models, isolated services |
@@ -183,7 +184,7 @@ Rate your implementation honestly. This self-awareness is part of the portfolio 
 ### Areas for Improvement
 
 - Wire real authentication and cross-device sync (the spec's recommendation) so the library survives a browser clear.
-- Code-split the bundle and defer the Open Library requests for faster first paint.
+- Defer and cache Open Library requests further for faster repeat searches.
 - Paginate and debounce large Goodreads imports.
 - Add keyboard shortcuts for rapid progress logging.
 
@@ -195,7 +196,6 @@ Rate your implementation honestly. This self-awareness is part of the portfolio 
 - **Auth is simulated.** The sign-in flow is frontend-only; there is no real account system yet.
 - **Year-in-Review is current-year focused.** Historical years require real persisted date ranges.
 - **Goodreads enrichment is limited.** Imported books map fields directly rather than fuzzy-matching against the Book API.
-- **Single JS bundle.** The app ships as one chunk; code-splitting (especially the review and modals) would improve initial load.
 
 ---
 
@@ -218,6 +218,20 @@ Then open `http://localhost:3000` — click **Try as Guest** to start with the c
 ### Environment Variables
 
 No environment variables are required. Everything runs client-side against public Open Library endpoints. (Add a `.env` only if you later introduce a backend or API keys.)
+
+---
+
+## Deployment
+
+The app is a static Vite build deployed to [Vercel](https://vercel.com). `vercel.json` pins the framework, build command, and output directory so deployments are reproducible:
+
+```bash
+# Deploy a production build (builds locally, then uploads the prebuilt output)
+vercel build --prod
+vercel deploy --prebuilt --prod
+```
+
+Or connect the GitHub repo in the Vercel dashboard and every push to `main` will deploy automatically. After a deploy, run Lighthouse against the production URL to audit performance, accessibility, best practices, and SEO.
 
 ---
 

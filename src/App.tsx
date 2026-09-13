@@ -1,7 +1,8 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
+import { useFocusTrap } from './hooks/useFocusTrap';
 import { LayoutDashboard, Grid, CheckCircle, Loader2 } from 'lucide-react';
 
 const LandingPage = lazy(() => import('./components/LandingPage').then((m) => ({ default: m.LandingPage })));
@@ -48,6 +49,20 @@ const MainLayout: React.FC = () => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [librarySubTab, setLibrarySubTab] = useState<'overview' | 'grid'>('overview');
 
+  const mobileDrawerRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(mobileDrawerRef, mobileSidebarOpen);
+
+  const prevMobileSidebarOpen = useRef(mobileSidebarOpen);
+  useEffect(() => {
+    if (prevMobileSidebarOpen.current && !mobileSidebarOpen) {
+      const toggle = document.getElementById('sidebar-toggle');
+      if (toggle instanceof HTMLElement) {
+        toggle.focus();
+      }
+    }
+    prevMobileSidebarOpen.current = mobileSidebarOpen;
+  }, [mobileSidebarOpen]);
+
   // Global keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -69,6 +84,7 @@ const MainLayout: React.FC = () => {
         setIsLibrarySearchOpen(true);
       } else if (e.key === 'Escape') {
         setSelectedBook(null);
+        setMobileSidebarOpen(false);
         setIsSearchModalOpen(false);
         setIsLibrarySearchOpen(false);
         setIsGoodreadsModalOpen(false);
@@ -83,6 +99,7 @@ const MainLayout: React.FC = () => {
   }, [
     setIsLibrarySearchOpen,
     setSelectedBook,
+    setMobileSidebarOpen,
     setIsSearchModalOpen,
     setIsGoodreadsModalOpen,
     setIsExportCardModalOpen,
@@ -106,13 +123,19 @@ const MainLayout: React.FC = () => {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
       {/* Desktop Sidebar */}
-      <div className="hidden md:block flex-shrink-0">
+      <div key="sidebar-desktop" className="hidden md:block flex-shrink-0">
         <Sidebar />
       </div>
 
       {/* Mobile Drawer */}
       {mobileSidebarOpen && (
         <div
+          key="mobile-drawer"
+          ref={mobileDrawerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Sidebar navigation"
+          tabIndex={-1}
           className="fixed inset-0 z-40 md:hidden bg-black/60 backdrop-blur-xs flex"
           onClick={() => setMobileSidebarOpen(false)}
         >
@@ -126,7 +149,7 @@ const MainLayout: React.FC = () => {
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div key="main-area" className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Navbar onToggleMobileSidebar={() => setMobileSidebarOpen(true)} />
 
         <main id="main-content" className="flex-1 overflow-y-auto px-3.5 sm:px-6 md:px-8 py-4 sm:py-6">
@@ -186,7 +209,7 @@ const MainLayout: React.FC = () => {
       </div>
 
       {/* Global Modals — lazily loaded when first opened */}
-      <Suspense fallback={null}>
+      <Suspense key="modals" fallback={null}>
         {selectedBook && <BookDetailModal />}
         {isSearchModalOpen && <SearchModal />}
         {isLibrarySearchOpen && <LibrarySearchModal />}

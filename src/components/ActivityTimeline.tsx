@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Clock, Plus, CheckCircle2, Star, Target, Bookmark, Filter } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useViewHeadingFocus } from '../hooks/useViewHeadingFocus';
 import { ActivityEvent } from '../types';
 
 export const ActivityTimeline: React.FC = () => {
   const { activities, books, setSelectedBook } = useApp();
   const [filterType, setFilterType] = useState<string>('all');
+  const headingRef = useViewHeadingFocus<HTMLHeadingElement>([]);
 
   const filtered = activities.filter((act) => {
     if (filterType === 'all') return true;
@@ -56,7 +58,7 @@ export const ActivityTimeline: React.FC = () => {
       {/* Header & Filter */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-[var(--color-border)]">
         <div>
-          <h1 className="font-heading text-2xl font-bold text-[var(--color-text-primary)]">
+          <h1 ref={headingRef} className="font-heading text-2xl font-bold text-[var(--color-text-primary)]">
             Reading Activity Timeline
           </h1>
           <p className="text-xs text-[var(--color-text-tertiary)] mt-0.5">

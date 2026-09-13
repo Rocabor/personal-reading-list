@@ -17,6 +17,7 @@ import { Book, SortField, SortOrder } from '../types';
 import { BookCard } from './BookCard';
 import { BookCover } from './BookCover';
 import { useApp } from '../context/AppContext';
+import { useViewHeadingFocus } from '../hooks/useViewHeadingFocus';
 
 export const ShelfView: React.FC = () => {
   const {
@@ -45,6 +46,7 @@ export const ShelfView: React.FC = () => {
   const [targetMoveShelf, setTargetMoveShelf] = useState(shelves[0]?.id || 'to-read');
   const [bulkGenreInput, setBulkGenreInput] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'spines'>('grid');
+  const headingRef = useViewHeadingFocus<HTMLHeadingElement>([activeShelfId]);
 
   const currentShelf = activeShelfId === 'all' ? null : shelves.find((s) => s.id === activeShelfId);
 
@@ -122,6 +124,7 @@ export const ShelfView: React.FC = () => {
                   type="text"
                   value={renameValue}
                   onChange={(e) => setRenameValue(e.target.value)}
+                  aria-label={`Rename ${currentShelf?.name ?? 'shelf'}`}
                   className="px-3 py-1 font-heading text-lg sm:text-xl font-bold rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]"
                   autoFocus
                 />
@@ -133,7 +136,7 @@ export const ShelfView: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <h1 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
+              <h1 ref={headingRef} className="font-heading text-xl sm:text-2xl md:text-3xl font-bold text-[var(--color-text-primary)] tracking-tight leading-tight">
                 {currentShelf ? currentShelf.name : 'All Library Books'}
               </h1>
             )}
@@ -321,6 +324,7 @@ export const ShelfView: React.FC = () => {
               <select
                 value={targetMoveShelf}
                 onChange={(e) => setTargetMoveShelf(e.target.value)}
+                aria-label="Move selected books to shelf"
                 className="px-2 py-1 rounded border border-[var(--color-border)] bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]"
               >
                 {shelves.map((s) => (

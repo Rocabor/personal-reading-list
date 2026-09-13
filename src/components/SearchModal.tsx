@@ -136,8 +136,9 @@ export const SearchModal: React.FC = () => {
           {/* Target Shelf Selector */}
           <div className="mt-3 flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
             <span className="flex items-center gap-1.5">
-              Add new books to:
+              <label htmlFor="search-add-shelf">Add new books to:</label>
               <select
+                id="search-add-shelf"
                 value={selectedShelfId}
                 onChange={(e) => setSelectedShelfId(e.target.value)}
                 className="px-2.5 py-1 rounded-md border border-[var(--color-border)] bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] font-medium"
@@ -157,8 +158,19 @@ export const SearchModal: React.FC = () => {
 
         {/* Search Results List */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
+          <div role="status" className="sr-only">
+            {isLoading && query.trim()
+              ? `Searching for ${query.trim()}...`
+              : !isLoading && !errorMessage && results.length > 0
+                ? `${results.length} ${results.length === 1 ? 'result' : 'results'} found`
+                : ''}
+          </div>
+
           {errorMessage && (
-            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 flex items-start gap-2.5 text-xs">
+            <div
+              role="alert"
+              className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 flex items-start gap-2.5 text-xs"
+            >
               <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
               <span>{errorMessage}</span>
             </div>

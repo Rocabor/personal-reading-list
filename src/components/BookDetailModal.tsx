@@ -119,6 +119,7 @@ export const BookDetailModal: React.FC = () => {
                   onClick={() => handleRatingChange(star)}
                   className="p-1 hover:scale-115 transition-transform"
                   aria-label={`Rate ${star} stars out of 5`}
+                  aria-pressed={selectedBook.rating === star}
                 >
                   <Star
                     className={`w-5 h-5 ${

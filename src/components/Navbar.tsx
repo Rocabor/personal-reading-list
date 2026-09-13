@@ -63,6 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
       {/* Left side: Mobile hamburger & Brand / Add Book */}
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <button
+          id="sidebar-toggle"
           onClick={onToggleMobileSidebar}
           className="md:hidden p-1.5 sm:p-2 rounded-xl text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] flex-shrink-0"
           aria-label="Toggle navigation menu"

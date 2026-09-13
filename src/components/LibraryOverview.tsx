@@ -1,6 +1,7 @@
 import React from 'react';
 import { BookOpen, Plus, ArrowRight, Bookmark, Sparkles, Star, ChevronRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useViewHeadingFocus } from '../hooks/useViewHeadingFocus';
 import { BookCover } from './BookCover';
 import { ReadingGoalCard } from './ReadingGoalCard';
 import { ReadingProgressBar } from './ReadingProgressBar';
@@ -14,6 +15,7 @@ export const LibraryOverview: React.FC = () => {
     setSelectedBook,
     setActiveView
   } = useApp();
+  const headingRef = useViewHeadingFocus<HTMLHeadingElement>([]);
 
   const currentlyReading = books.filter((b) => b.shelfId === 'currently-reading');
   const readBooks = books.filter((b) => b.shelfId === 'read' || b.shelfId === 'favorites');
@@ -28,7 +30,7 @@ export const LibraryOverview: React.FC = () => {
             <div className="flex items-center gap-2 text-xs font-semibold text-[var(--color-accent)] uppercase tracking-wider mb-2">
               <Sparkles className="w-3.5 h-3.5" /> Welcome to your library
             </div>
-            <h1 className="font-heading text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)] leading-tight">
+            <h1 ref={headingRef} className="font-heading text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)] leading-tight">
               A curated space for your reading life.
             </h1>
             <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mt-2 max-w-xl leading-relaxed">

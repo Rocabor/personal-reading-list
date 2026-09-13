@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { Trophy, Calendar, BookOpen, Star, Sparkles, Share2, Flame, Award, Clock, ArrowUpRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useViewHeadingFocus } from '../hooks/useViewHeadingFocus';
 import { BookCover } from './BookCover';
 
 export const YearInReview: React.FC = () => {
   const { books, readingGoal, setIsExportCardModalOpen, setSelectedBook } = useApp();
   const [selectedYear, setSelectedYear] = useState<number>(() => new Date().getFullYear());
+  const headingRef = useViewHeadingFocus<HTMLHeadingElement>([]);
 
   // Years with at least one finished book, plus the current year
   const availableYears = useMemo(() => {
@@ -78,7 +80,7 @@ export const YearInReview: React.FC = () => {
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-semibold text-amber-300 border border-white/10 mb-3">
               <Sparkles className="w-3.5 h-3.5" /> Reading Journey Showcase
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-bold leading-tight tracking-tight">
+            <h1 ref={headingRef} className="font-heading text-3xl sm:text-4xl font-bold leading-tight tracking-tight">
               {selectedYear} Year in Review
             </h1>
             <p className="text-sm sm:text-base text-stone-300 mt-2 leading-relaxed">

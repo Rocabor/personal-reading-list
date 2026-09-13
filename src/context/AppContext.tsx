@@ -74,7 +74,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUserState] = useState<UserProfile | null>(() => getCurrentUser() || GUEST_USER);
+  const [user, setUserState] = useState<UserProfile | null>(() => getCurrentUser());
   const [activeView, setActiveView] = useState<'library' | 'year-in-review' | 'activity' | 'landing'>('library');
   const [activeShelfId, setActiveShelfId] = useState<ShelfId | 'all'>('currently-reading');
 

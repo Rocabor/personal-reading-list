@@ -149,8 +149,37 @@ export const LandingPage: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-[var(--color-border)] py-6 px-6 text-center text-xs text-[var(--color-text-tertiary)] bg-[var(--color-bg-secondary)]/30">
-        <p>Bookshelf • Built with precision, literary care, and respect for the reader's journey.</p>
+      <footer className="mx-auto mt-16 w-full max-w-5xl flex flex-col items-center border-t-2 border-[var(--color-border)] px-4 py-8 text-center text-sm text-[var(--color-text-tertiary)]">
+        <p>
+          <span className="font-heading font-bold text-[var(--color-text-primary)]">Bookshelf</span>{" "}
+          — your reading life, beautifully organized.
+        </p>
+
+        <nav aria-label="Attribution credits" className="mt-2">
+          <p className="flex flex-wrap items-center justify-center gap-1 text-xs font-medium">
+            <span>Challenge by</span>
+            <a
+              href="https://frontendmentor.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold underline underline-offset-2 text-[var(--color-text-primary)] transition-colors hover:text-[var(--color-accent)]"
+            >
+              Frontend Mentor
+            </a>
+            <span>• Coded by</span>
+            <a
+              href="https://frontendmentor.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold underline underline-offset-2 text-[var(--color-text-primary)] transition-colors hover:text-[var(--color-accent)]"
+            >
+              @Rocabor
+            </a>
+            <span className="font-bold text-[var(--color-text-primary)]">
+              &copy;{new Date().getFullYear()}
+            </span>
+          </p>
+        </nav>
       </footer>
     </div>
   );

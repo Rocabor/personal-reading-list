@@ -180,7 +180,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
               </div>
 
               <div className="p-1 space-y-0.5">
-                {user?.isGuest ? (
+                {user?.isGuest && (
                   <button
                     onClick={() => {
                       setIsUserMenuOpen(false);
@@ -190,18 +190,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
                   >
                     Sync / Create Account
                   </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setIsUserMenuOpen(false);
-                      logout();
-                    }}
-                    className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-xl text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
-                  >
-                    <LogOut className="w-3.5 h-3.5" />
-                    <span>Sign Out</span>
-                  </button>
                 )}
+                <button
+                  onClick={() => {
+                    setIsUserMenuOpen(false);
+                    logout();
+                  }}
+                  className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-xl text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out</span>
+                </button>
               </div>
             </div>
           )}

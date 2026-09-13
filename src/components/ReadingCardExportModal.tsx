@@ -74,7 +74,7 @@ export const ReadingCardExportModal: React.FC = () => {
     ctx.fillText('ANNUAL GOAL PROGRESS', 100, 550);
     ctx.fillStyle = '#5AAF6E';
     ctx.font = 'bold 54px serif';
-    ctx.fillText(`${readingGoal.completedCount} / ${readingGoal.targetCount} Books (${Math.round((readingGoal.completedCount / readingGoal.targetCount) * 100)}%)`, 100, 620);
+    ctx.fillText(readingGoal ? `${readingGoal.completedCount} / ${readingGoal.targetCount} Books (${Math.round((readingGoal.completedCount / readingGoal.targetCount) * 100)}%)` : 'No Annual Goal — Read What You Love', 100, 620);
 
     // Top Reads section
     ctx.fillStyle = '#D4A03E';
@@ -182,7 +182,7 @@ export const ReadingCardExportModal: React.FC = () => {
           </div>
 
           <div className="mt-5 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-stone-400">
-            <span>Goal: {readingGoal.completedCount}/{readingGoal.targetCount} Completed</span>
+            <span>Goal: {readingGoal ? `${readingGoal.completedCount}/${readingGoal.targetCount}` : 'Not Set'} Completed</span>
             <span className="text-amber-400/80 font-mono">bookshelf.app</span>
           </div>
         </div>

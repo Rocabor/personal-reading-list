@@ -179,6 +179,12 @@ export const BookDetailModal: React.FC = () => {
                   {selectedBook.dateRead}
                 </div>
               )}
+              {selectedBook.dateAdded && (
+                <div>
+                  <span className="font-semibold text-[var(--color-text-secondary)]">Added:</span>{' '}
+                  {selectedBook.dateAdded}
+                </div>
+              )}
             </div>
           </div>
         </div>

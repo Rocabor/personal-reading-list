@@ -12,6 +12,8 @@ import {
   Star,
   Search,
   Edit2,
+  ChevronUp,
+  ChevronDown,
   X
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -29,6 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
     activeView,
     setActiveView,
     createShelf,
+    moveShelf,
     setIsGoodreadsModalOpen,
     readingGoal,
     updateReadingGoal,
@@ -39,7 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
   const [isCreatingShelf, setIsCreatingShelf] = useState(false);
   const [newShelfName, setNewShelfName] = useState('');
   const [isEditingGoal, setIsEditingGoal] = useState(false);
-  const [goalTargetInput, setGoalTargetInput] = useState(readingGoal.targetCount);
+  const [goalTargetInput, setGoalTargetInput] = useState(readingGoal?.targetCount ?? 24);
 
   const handleCreateShelf = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
     if (goalTargetInput > 0) {
       updateReadingGoal(goalTargetInput);
       setIsEditingGoal(false);
-      if (readingGoal.completedCount >= goalTargetInput) {
+      if ((readingGoal?.completedCount ?? 0) >= goalTargetInput) {
         triggerConfetti();
       }
     }
@@ -84,17 +87,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
     onCloseMobile?.();
   };
 
-  // Filter shelves based on search
-  const filteredShelves = shelves.filter((shelf) =>
-    shelf.name.toLowerCase().includes(shelfSearchQuery.toLowerCase())
-  );
+  // Filter shelves based on search, keep them sorted by position
+  const filteredShelves = shelves
+    .filter((shelf) =>
+      shelf.name.toLowerCase().includes(shelfSearchQuery.toLowerCase())
+    )
+    .sort((a, b) => a.position - b.position);
 
   // Goal calculations
-  const goalPercentage = Math.min(
-    100,
-    Math.round((readingGoal.completedCount / readingGoal.targetCount) * 100)
-  );
-  const booksRemaining = Math.max(0, readingGoal.targetCount - readingGoal.completedCount);
+  const goalPercentage = readingGoal
+    ? Math.min(100, Math.round((readingGoal.completedCount / readingGoal.targetCount) * 100))
+    : 0;
+  const booksRemaining = readingGoal
+    ? Math.max(0, readingGoal.targetCount - readingGoal.completedCount)
+    : 0;
 
   return (
     <aside
@@ -200,25 +206,51 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
             {filteredShelves.map((shelf) => {
               const count = books.filter((b) => b.shelfId === shelf.id).length;
               const isActive = activeView === 'library' && activeShelfId === shelf.id;
+              const shelfIndex = shelves.findIndex((s) => s.id === shelf.id);
 
               return (
-                <button
+                <div
                   key={shelf.id}
-                  onClick={() => handleNavClick('library', shelf.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+                  className={`group w-full flex items-center rounded-xl text-xs font-medium transition-colors ${
                     isActive
                       ? 'bg-[var(--color-surface)] text-[var(--color-accent)] font-semibold shadow-2xs border border-[var(--color-border-subtle)]'
                       : 'text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]'
                   }`}
                 >
-                  <span className="flex items-center gap-2.5 truncate">
-                    {getShelfIcon(shelf.id)}
-                    <span className="truncate">{shelf.name}</span>
-                  </span>
-                  <span className="font-mono text-[11px] text-[var(--color-text-secondary)] ml-1 font-semibold">
-                    {count}
-                  </span>
-                </button>
+                  <button
+                    onClick={() => handleNavClick('library', shelf.id)}
+                    className="flex-1 flex items-center justify-between px-3 py-2 rounded-l-xl min-w-0"
+                  >
+                    <span className="flex items-center gap-2.5 truncate">
+                      {getShelfIcon(shelf.id)}
+                      <span className="truncate">{shelf.name}</span>
+                    </span>
+                    <span className="font-mono text-[11px] text-[var(--color-text-secondary)] ml-1 font-semibold flex-shrink-0">
+                      {count}
+                    </span>
+                  </button>
+                  {/* Reorder controls (shown on hover/focus) */}
+                  <div className="hidden group-hover:flex flex-col items-center pr-1">
+                    <button
+                      onClick={() => moveShelf(shelf.id, 'up')}
+                      disabled={shelfIndex <= 0}
+                      className={`p-0.5 rounded hover:bg-[var(--color-bg-tertiary)] ${shelfIndex <= 0 ? 'invisible' : ''}`}
+                      aria-label={`Move ${shelf.name} up`}
+                      title="Move shelf up"
+                    >
+                      <ChevronUp className="w-3 h-3 text-[var(--color-text-tertiary)]" />
+                    </button>
+                    <button
+                      onClick={() => moveShelf(shelf.id, 'down')}
+                      disabled={shelfIndex >= shelves.length - 1}
+                      className={`p-0.5 rounded hover:bg-[var(--color-bg-tertiary)] ${shelfIndex >= shelves.length - 1 ? 'invisible' : ''}`}
+                      aria-label={`Move ${shelf.name} down`}
+                      title="Move shelf down"
+                    >
+                      <ChevronDown className="w-3 h-3 text-[var(--color-text-tertiary)]" />
+                    </button>
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -275,6 +307,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
         id="sidebar-reading-goal"
         className="p-4 border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)] select-none flex-shrink-0"
       >
+        {!readingGoal ? (
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-bold tracking-wider uppercase text-[var(--color-text-tertiary)]">
+              Reading Goal
+            </span>
+            <form onSubmit={handleSaveGoal} className="flex items-center gap-2 my-1">
+              <input
+                type="number"
+                min={1}
+                max={500}
+                value={goalTargetInput}
+                onChange={(e) => setGoalTargetInput(parseInt(e.target.value, 10) || 1)}
+                aria-label="Reading goal target"
+                className="w-16 px-2 py-0.5 text-xs rounded border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)]"
+              />
+              <button
+                type="submit"
+                className="px-2 py-0.5 rounded bg-[var(--color-accent)] text-white text-xs font-semibold"
+              >
+                Set
+              </button>
+            </form>
+            <p className="text-[11px] text-[var(--color-text-tertiary)]">
+              Pick a goal to track your yearly reading pace.
+            </p>
+          </div>
+        ) : (
         <div className="space-y-1.5">
           {/* Label and Year */}
           <div className="flex items-center justify-between">
@@ -358,6 +417,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
             <span>{booksRemaining} {booksRemaining === 1 ? 'book' : 'books'} to go</span>
           </div>
         </div>
+        )}
       </div>
     </aside>
   );

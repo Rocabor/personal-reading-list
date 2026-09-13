@@ -125,20 +125,21 @@ export function saveStoredBooks(userId: string, books: Book[]): void {
   } catch {}
 }
 
-export function getStoredGoal(userId: string): ReadingGoal {
+export function getStoredGoal(userId: string): ReadingGoal | null {
   try {
     const key = getUserStorageKey(userId, 'goal');
     const raw = localStorage.getItem(key);
-    if (raw) {
-      return JSON.parse(raw);
+    if (raw === null) {
+      return DEFAULT_GOAL;
     }
-    return DEFAULT_GOAL;
+    const parsed = JSON.parse(raw);
+    return parsed === null ? null : parsed;
   } catch {
     return DEFAULT_GOAL;
   }
 }
 
-export function saveStoredGoal(userId: string, goal: ReadingGoal): void {
+export function saveStoredGoal(userId: string, goal: ReadingGoal | null): void {
   try {
     const key = getUserStorageKey(userId, 'goal');
     localStorage.setItem(key, JSON.stringify(goal));

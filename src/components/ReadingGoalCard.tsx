@@ -3,9 +3,56 @@ import { Target, Trophy, TrendingUp, Edit2, Check, Sparkles } from 'lucide-react
 import { useApp } from '../context/AppContext';
 
 export const ReadingGoalCard: React.FC = () => {
-  const { readingGoal, updateReadingGoal, triggerConfetti } = useApp();
+  const { readingGoal, updateReadingGoal, clearReadingGoal, triggerConfetti } = useApp();
   const [isEditing, setIsEditing] = useState(false);
-  const [newTarget, setNewTarget] = useState(readingGoal.targetCount);
+  const [newTarget, setNewTarget] = useState(readingGoal?.targetCount ?? 24);
+
+  // No goal set — show a CTA to create one
+  if (!readingGoal) {
+    return (
+      <div
+        id="reading-goal-card"
+        className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 shadow-xs"
+      >
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-lg bg-[var(--color-accent-subtle)] text-[var(--color-accent)] flex items-center justify-center">
+            <Target className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="font-heading font-semibold text-base text-[var(--color-text-primary)]">
+              Set Your Reading Goal
+            </h2>
+            <p className="text-xs text-[var(--color-text-tertiary)]">
+              Pick how many books to read this year
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-center gap-2">
+          <input
+            type="number"
+            min={1}
+            max={500}
+            value={newTarget}
+            onChange={(e) => setNewTarget(parseInt(e.target.value, 10) || 1)}
+            aria-label="Reading goal target"
+            className="w-16 px-2 py-1 text-xs rounded border border-[var(--color-border)] bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+          />
+          <button
+            onClick={() => updateReadingGoal(newTarget)}
+            className="px-3 py-1.5 rounded bg-[var(--color-accent)] text-white text-xs font-semibold hover:bg-[var(--color-accent-hover)] transition-colors"
+          >
+            Set Goal
+          </button>
+        </div>
+        <p className="text-[11px] text-[var(--color-text-tertiary)] mt-3">
+          Track your pace through the year and celebrate when you finish.
+        </p>
+      </div>
+    );
+  }
+
+  const { targetCount, completedCount, year } = readingGoal;
 
   // Day of year calculation for accurate pace analysis
   const now = new Date();
@@ -13,13 +60,13 @@ export const ReadingGoalCard: React.FC = () => {
   const dayOfYear = Math.floor((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   const daysInYear = 365;
   const yearFraction = dayOfYear / daysInYear;
-  const expectedPaceBooks = Math.round(readingGoal.targetCount * yearFraction);
+  const expectedPaceBooks = Math.round(targetCount * yearFraction);
 
-  const diff = readingGoal.completedCount - expectedPaceBooks;
+  const diff = completedCount - expectedPaceBooks;
   let paceStatus: 'ahead' | 'on_track' | 'behind';
   let paceMessage: string;
 
-  if (readingGoal.completedCount >= readingGoal.targetCount) {
+  if (completedCount >= targetCount) {
     paceStatus = 'ahead';
     paceMessage = 'Goal completed! Fantastic reading year!';
   } else if (diff >= 2) {
@@ -33,7 +80,7 @@ export const ReadingGoalCard: React.FC = () => {
     paceMessage = 'Exactly on track for your goal';
   }
 
-  const percentage = Math.min(100, Math.round((readingGoal.completedCount / readingGoal.targetCount) * 100));
+  const percentage = Math.min(100, Math.round((completedCount / targetCount) * 100));
 
   const handleSave = () => {
     if (newTarget > 0) {
@@ -50,7 +97,7 @@ export const ReadingGoalCard: React.FC = () => {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-lg bg-[var(--color-accent-subtle)] text-[var(--color-accent)] flex items-center justify-center">
-            {readingGoal.completedCount >= readingGoal.targetCount ? (
+            {completedCount >= targetCount ? (
               <Trophy className="w-5 h-5 text-[var(--color-rating)] animate-bounce" />
             ) : (
               <Target className="w-5 h-5" />
@@ -58,10 +105,10 @@ export const ReadingGoalCard: React.FC = () => {
           </div>
           <div>
             <h2 className="font-heading font-semibold text-base text-[var(--color-text-primary)]">
-              {readingGoal.year} Reading Goal
+              {year} Reading Goal
             </h2>
             <p className="text-xs text-[var(--color-text-tertiary)]">
-              {readingGoal.completedCount} of {readingGoal.targetCount} books completed
+              {completedCount} of {targetCount} books completed
             </p>
           </div>
         </div>
@@ -111,7 +158,7 @@ export const ReadingGoalCard: React.FC = () => {
             aria-valuenow={percentage}
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-label={`2026 reading goal: ${percentage}% completed`}
+            aria-label={`${year} reading goal: ${percentage}% completed`}
           />
         </div>
       </div>
@@ -141,7 +188,7 @@ export const ReadingGoalCard: React.FC = () => {
           </span>
         </div>
 
-        {readingGoal.completedCount >= readingGoal.targetCount && (
+        {completedCount >= targetCount && (
           <button
             onClick={triggerConfetti}
             className="flex items-center gap-1 text-[11px] text-[var(--color-rating)] font-semibold hover:underline"
@@ -149,6 +196,24 @@ export const ReadingGoalCard: React.FC = () => {
             <Sparkles className="w-3 h-3" /> Celebrate
           </button>
         )}
+      </div>
+
+      {/* Clear goal control */}
+      <div className="mt-2 flex items-center justify-between">
+        <span className="text-[11px] text-[var(--color-text-tertiary)]">
+          {targetCount - completedCount > 0 ? `${targetCount - completedCount} books to go` : 'Goal reached'}
+        </span>
+        <button
+          onClick={() => {
+            if (window.confirm('Clear your reading goal? You can set a new one anytime.')) {
+              clearReadingGoal();
+            }
+          }}
+          className="text-[11px] text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] transition-colors"
+          title="Remove this reading goal"
+        >
+          Clear goal
+        </button>
       </div>
     </div>
   );

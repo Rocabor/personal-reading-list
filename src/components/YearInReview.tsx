@@ -143,12 +143,23 @@ export const YearInReview: React.FC = () => {
             <span className="text-xs font-medium">Reading Goal</span>
             <Trophy className="w-4 h-4 text-amber-500" />
           </div>
-          <p className="font-heading text-3xl font-bold text-[var(--color-text-primary)]">
-            {readingGoal.completedCount}/{readingGoal.targetCount}
-          </p>
-          <p className="text-[11px] text-[var(--color-text-secondary)] mt-1">
-            {Math.round((readingGoal.completedCount / readingGoal.targetCount) * 100)}% target reached
-          </p>
+          {readingGoal ? (
+            <>
+              <p className="font-heading text-3xl font-bold text-[var(--color-text-primary)]">
+                {readingGoal.completedCount}/{readingGoal.targetCount}
+              </p>
+              <p className="text-[11px] text-[var(--color-text-secondary)] mt-1">
+                {Math.round((readingGoal.completedCount / readingGoal.targetCount) * 100)}% target reached
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-heading text-3xl font-bold text-[var(--color-text-tertiary)]">—</p>
+              <p className="text-[11px] text-[var(--color-text-secondary)] mt-1">
+                No goal set for this year
+              </p>
+            </>
+          )}
         </div>
       </div>
 

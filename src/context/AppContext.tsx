@@ -30,8 +30,9 @@ interface AppContextType {
   setActiveShelfId: (id: ShelfId | 'all') => void;
   activeView: 'library' | 'year-in-review' | 'activity' | 'landing';
   setActiveView: (view: 'library' | 'year-in-review' | 'activity' | 'landing') => void;
-  readingGoal: ReadingGoal;
+  readingGoal: ReadingGoal | null;
   updateReadingGoal: (target: number) => void;
+  clearReadingGoal: () => void;
   theme: 'light' | 'dark' | 'system';
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
   a11ySettings: AccessibilitySettings;
@@ -45,6 +46,7 @@ interface AppContextType {
   createShelf: (name: string) => void;
   renameShelf: (id: string, newName: string) => void;
   deleteShelf: (id: string) => void;
+  moveShelf: (shelfId: string, direction: 'up' | 'down') => void;
   selectedBook: Book | null;
   setSelectedBook: (book: Book | null) => void;
   isSearchModalOpen: boolean;
@@ -80,7 +82,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const [shelves, setShelves] = useState<Shelf[]>(() => getStoredShelves(userId));
   const [books, setBooks] = useState<Book[]>(() => getStoredBooks(userId, user?.isGuest ?? true));
-  const [readingGoal, setReadingGoal] = useState<ReadingGoal>(() => getStoredGoal(userId));
+  const [readingGoal, setReadingGoal] = useState<ReadingGoal | null>(() => getStoredGoal(userId));
   const [activities, setActivities] = useState<ActivityEvent[]>(() => getStoredActivities(userId));
   const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>(() => getThemePreference());
   const [a11ySettings, setA11ySettingsState] = useState<AccessibilitySettings>(() => getA11ySettings());
@@ -146,6 +148,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     } else {
       root.classList.remove('font-dyslexic');
     }
+
+    root.classList.remove('a11y-font-large', 'a11y-font-larger');
+    if (a11ySettings.fontSize === 'large') root.classList.add('a11y-font-large');
+    else if (a11ySettings.fontSize === 'larger') root.classList.add('a11y-font-larger');
+
+    root.classList.remove('a11y-line-relaxed', 'a11y-line-loose');
+    if (a11ySettings.lineHeight === 'relaxed') root.classList.add('a11y-line-relaxed');
+    else if (a11ySettings.lineHeight === 'loose') root.classList.add('a11y-line-loose');
   }, [a11ySettings]);
 
   const showToast = useCallback((msg: string) => {
@@ -218,8 +228,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     showToast('Signed out successfully.');
   }, [showToast]);
 
-  const updateGoalCalculations = useCallback((currentBooks: Book[], currentGoal: ReadingGoal) => {
-    // Count books completed in current year (either on 'read' or 'favorites' shelf)
+  const updateGoalCalculations = useCallback((currentBooks: Book[], currentGoal: ReadingGoal | null) => {
+    if (!currentGoal) return;
     const currentYearStr = currentGoal.year.toString();
     const completedThisYear = currentBooks.filter(b => {
       const isCompletedShelf = b.shelfId === 'read' || b.shelfId === 'favorites';
@@ -392,18 +402,47 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [shelves, userId, activeShelfId, showToast]);
 
   const updateReadingGoal = useCallback((target: number) => {
+    const currentYearStr = (readingGoal?.year ?? new Date().getFullYear()).toString();
+    const completedThisYear = books.filter(b => {
+      const isCompletedShelf = b.shelfId === 'read' || b.shelfId === 'favorites';
+      if (!isCompletedShelf) return false;
+      if (b.dateRead && b.dateRead.startsWith(currentYearStr)) return true;
+      return true;
+    }).length;
     const updated: ReadingGoal = {
-      ...readingGoal,
-      targetCount: target
+      year: readingGoal?.year ?? new Date().getFullYear(),
+      targetCount: target,
+      completedCount: completedThisYear
     };
     setReadingGoal(updated);
     saveStoredGoal(userId, updated);
-    logActivity('goal_updated', undefined, `Updated 2026 goal to ${target} books`);
+    logActivity('goal_updated', undefined, `Updated ${updated.year} goal to ${target} books`);
     showToast(`Updated annual reading goal to ${target} books!`);
     if (updated.completedCount >= updated.targetCount) {
       triggerConfetti();
     }
-  }, [readingGoal, userId, logActivity, showToast, triggerConfetti]);
+  }, [readingGoal, books, userId, logActivity, showToast, triggerConfetti]);
+
+  const clearReadingGoal = useCallback(() => {
+    setReadingGoal(null);
+    saveStoredGoal(userId, null);
+    logActivity('goal_updated', undefined, 'Reading goal cleared');
+    showToast('Reading goal cleared. Set a new one anytime.');
+  }, [userId, logActivity, showToast]);
+
+  const moveShelf = useCallback((shelfId: string, direction: 'up' | 'down') => {
+    setShelves(prev => {
+      const idx = prev.findIndex(s => s.id === shelfId);
+      if (idx < 0) return prev;
+      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+      if (targetIdx < 0 || targetIdx >= prev.length) return prev;
+      const next = [...prev];
+      [next[idx], next[targetIdx]] = [next[targetIdx], next[idx]];
+      const withPositions = next.map((s, i) => ({ ...s, position: i }));
+      saveStoredShelves(userId, withPositions);
+      return withPositions;
+    });
+  }, [userId]);
 
   const setTheme = useCallback((t: 'light' | 'dark' | 'system') => {
     setThemeState(t);
@@ -499,6 +538,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setActiveView,
         readingGoal,
         updateReadingGoal,
+        clearReadingGoal,
         theme,
         setTheme,
         a11ySettings,
@@ -512,6 +552,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         createShelf,
         renameShelf,
         deleteShelf,
+        moveShelf,
         selectedBook,
         setSelectedBook,
         isSearchModalOpen,

@@ -95,7 +95,7 @@ export const ReadingProgressBar: React.FC<ReadingProgressBarProps> = ({ book, co
             </span>
             <button
               onClick={handleSavePage}
-              className="px-2.5 py-1 bg-[var(--color-accent)] text-white font-medium rounded hover:bg-[var(--color-accent-hover)] transition-colors"
+              className="px-2.5 py-1 bg-[var(--color-accent)] text-[var(--color-accent-text)] font-medium rounded hover:bg-[var(--color-accent-hover)] transition-colors"
             >
               Save
             </button>

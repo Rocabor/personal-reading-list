@@ -14,7 +14,7 @@ export const LandingPage: React.FC = () => {
       {/* Top Navigation */}
       <header className="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-[var(--color-accent)] text-white flex items-center justify-center shadow-md">
+          <div className="w-9 h-9 rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-text)] flex items-center justify-center shadow-md">
             <BookOpen className="w-5 h-5" />
           </div>
           <span className="font-heading font-bold text-xl tracking-tight text-[var(--color-text-primary)]">
@@ -31,7 +31,7 @@ export const LandingPage: React.FC = () => {
           </button>
           <button
             onClick={() => setIsAuthModalOpen(true)}
-            className="px-4 py-2 text-xs font-semibold rounded-xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] transition-all shadow-xs"
+            className="px-4 py-2 text-xs font-semibold rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hover)] transition-all shadow-xs"
           >
             Sign Up
           </button>
@@ -56,7 +56,7 @@ export const LandingPage: React.FC = () => {
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
           <button
             onClick={loginAsGuest}
-            className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-semibold text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 hover:scale-102"
+            className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-[var(--color-accent-text)] font-semibold text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 hover:scale-102"
           >
             Try as Guest <ArrowRight className="w-4 h-4" />
           </button>

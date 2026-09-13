@@ -203,7 +203,7 @@ export const SearchModal: React.FC = () => {
                   ) : (
                     <button
                       onClick={() => handleAddBook(item)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-accent)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hover)] transition-colors shadow-2xs"
                     >
                       <Plus className="w-3.5 h-3.5" /> Add
                     </button>

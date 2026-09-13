@@ -40,7 +40,7 @@ export const ReadingGoalCard: React.FC = () => {
           />
           <button
             onClick={() => updateReadingGoal(newTarget)}
-            className="px-3 py-1.5 rounded bg-[var(--color-accent)] text-white text-xs font-semibold hover:bg-[var(--color-accent-hover)] transition-colors"
+            className="px-3 py-1.5 rounded bg-[var(--color-accent)] text-[var(--color-accent-text)] text-xs font-semibold hover:bg-[var(--color-accent-hover)] transition-colors"
           >
             Set Goal
           </button>
@@ -135,7 +135,7 @@ export const ReadingGoalCard: React.FC = () => {
             />
             <button
               onClick={handleSave}
-              className="p-1 bg-[var(--color-accent)] text-white rounded hover:bg-[var(--color-accent-hover)] transition-colors"
+              className="p-1 bg-[var(--color-accent)] text-[var(--color-accent-text)] rounded hover:bg-[var(--color-accent-hover)] transition-colors"
               title="Save target"
             >
               <Check className="w-3.5 h-3.5" />

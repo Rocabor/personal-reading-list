@@ -14,6 +14,7 @@
   --color-accent: #944415;
   --color-accent-hover: #78340d;
   --color-accent-subtle: #fdf4eb;
+  --color-accent-text: #ffffff;
 
   --color-success: #1e6334;
   --color-warning: #92400e;
@@ -92,6 +93,7 @@
   --color-accent: #944415;
   --color-accent-hover: #78340d;
   --color-accent-subtle: #fdf4eb;
+  --color-accent-text: #ffffff;
 
   --color-success: #1e6334;
   --color-warning: #92400e;
@@ -123,6 +125,7 @@
   --color-accent: #d4964a;
   --color-accent-hover: #e0a85e;
   --color-accent-subtle: #2e2218;
+  --color-accent-text: #18120e;
 
   --color-success: #5aaf6e;
   --color-warning: #e0a85e;

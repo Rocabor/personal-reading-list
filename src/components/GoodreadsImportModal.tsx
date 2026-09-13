@@ -376,7 +376,7 @@ export const GoodreadsImportModal: React.FC = () => {
                     <button
                       onClick={handleConfirmImport}
                       disabled={parsedResult.books.length === 0}
-                      className="px-4 py-2 text-xs font-semibold rounded-xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] transition-colors shadow-xs disabled:opacity-50 flex items-center gap-1.5"
+                      className="px-4 py-2 text-xs font-semibold rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hover)] transition-colors shadow-xs disabled:opacity-50 flex items-center gap-1.5"
                     >
                       Import {parsedResult.books.length} Books <ArrowRight className="w-3.5 h-3.5" />
                     </button>

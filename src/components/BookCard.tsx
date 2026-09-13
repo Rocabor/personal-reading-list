@@ -46,7 +46,7 @@ export const BookCard: React.FC<BookCardProps> = ({
             }}
             className={`absolute top-2 left-2 z-30 w-5 h-5 rounded-md flex items-center justify-center transition-all ${
               isSelected
-                ? 'bg-[var(--color-accent)] text-white shadow-xs'
+                ? 'bg-[var(--color-accent)] text-[var(--color-accent-text)] shadow-xs'
                 : 'bg-[var(--color-surface)] border border-[var(--color-border)] text-transparent hover:text-gray-400'
             }`}
           >
@@ -67,12 +67,12 @@ export const BookCard: React.FC<BookCardProps> = ({
         {/* Info & Progress */}
         <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
           <div>
-            <h3
+            <h2
               className="font-heading font-bold text-sm sm:text-base leading-snug text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors line-clamp-2"
               title={book.title}
             >
               {book.title}
-            </h3>
+            </h2>
             <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 truncate">
               {book.author}
             </p>
@@ -125,7 +125,7 @@ export const BookCard: React.FC<BookCardProps> = ({
           }}
           className={`absolute top-3 left-3 z-30 w-6 h-6 rounded-md flex items-center justify-center transition-all ${
             isSelected
-              ? 'bg-[var(--color-accent)] text-white shadow-md'
+              ? 'bg-[var(--color-accent)] text-[var(--color-accent-text)] shadow-md'
               : 'bg-[var(--color-surface)] border border-[var(--color-border)] text-transparent hover:text-gray-400 shadow-xs'
           }`}
         >

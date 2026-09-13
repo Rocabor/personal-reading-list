@@ -198,7 +198,7 @@ export const ReadingCardExportModal: React.FC = () => {
           </button>
           <button
             onClick={handleDownload}
-            className="px-5 py-2.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-xs font-semibold flex items-center gap-1.5 shadow-md"
+            className="px-5 py-2.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-[var(--color-accent-text)] text-xs font-semibold flex items-center gap-1.5 shadow-md"
           >
             <Download className="w-4 h-4" /> Download Image
           </button>

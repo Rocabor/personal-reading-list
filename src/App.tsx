@@ -146,7 +146,7 @@ const MainLayout: React.FC = () => {
                         onClick={() => setLibrarySubTab('overview')}
                         className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
                           librarySubTab === 'overview'
-                            ? 'bg-[var(--color-accent)] text-white shadow-2xs'
+                            ? 'bg-[var(--color-accent)] text-[var(--color-accent-text)] shadow-2xs'
                             : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
                         }`}
                       >
@@ -157,7 +157,7 @@ const MainLayout: React.FC = () => {
                         onClick={() => setLibrarySubTab('grid')}
                         className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
                           librarySubTab === 'grid'
-                            ? 'bg-[var(--color-accent)] text-white shadow-2xs'
+                            ? 'bg-[var(--color-accent)] text-[var(--color-accent-text)] shadow-2xs'
                             : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
                         }`}
                       >

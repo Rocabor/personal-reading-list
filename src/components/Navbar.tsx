@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
       {/* Skip to Content Link for keyboard users */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-4 z-50 px-3 py-1.5 rounded-lg bg-[var(--color-accent)] text-white text-xs font-semibold"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-4 z-50 px-3 py-1.5 rounded-lg bg-[var(--color-accent)] text-[var(--color-accent-text)] text-xs font-semibold"
       >
         Skip to main content
       </a>
@@ -72,7 +72,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
 
         {/* Brand indicator for mobile */}
         <div className="md:hidden flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-          <div className="w-7 h-7 rounded-lg bg-[var(--color-accent)] text-white flex items-center justify-center flex-shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-[var(--color-accent)] text-[var(--color-accent-text)] flex items-center justify-center flex-shrink-0">
             <BookOpen className="w-4 h-4" />
           </div>
           <span className="font-heading font-bold text-base text-[var(--color-text-primary)]">
@@ -83,7 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
         {/* Add Book CTA (visible on desktop where space is ample) */}
         <button
           onClick={() => setIsSearchModalOpen(true)}
-          className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-xs font-semibold transition-colors shadow-2xs flex-shrink-0"
+          className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-[var(--color-accent-text)] text-xs font-semibold transition-colors shadow-2xs flex-shrink-0"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Add Book</span>
@@ -147,9 +147,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
         <div className="relative flex-shrink-0" ref={userMenuRef}>
           <button
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            className="w-8 h-8 rounded-full bg-[var(--color-accent)] text-white font-semibold text-xs flex items-center justify-center hover:opacity-90 transition-opacity shadow-xs focus:ring-2 focus:ring-[var(--color-accent)]/40 select-none cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[var(--color-accent)] text-[var(--color-accent-text)] font-semibold text-xs flex items-center justify-center hover:opacity-90 transition-opacity shadow-xs focus:ring-2 focus:ring-[var(--color-accent)]/40 select-none cursor-pointer"
             title={user?.name ? `${user.name} (${user.email || 'Local session'})` : 'Account menu'}
-            aria-label="User account menu"
+            aria-label={`${getUserInitials()} — User account menu`}
             aria-expanded={isUserMenuOpen}
           >
             {getUserInitials()}
@@ -160,7 +160,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
             <div className="absolute right-0 mt-2 w-60 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-lg py-2 z-50">
               <div className="px-3.5 py-2 border-b border-[var(--color-border-subtle)]">
                 <div className="flex items-center gap-2 mb-1">
-                  <div className="w-7 h-7 rounded-full bg-[var(--color-accent)] text-white flex items-center justify-center font-bold text-xs">
+                  <div className="w-7 h-7 rounded-full bg-[var(--color-accent)] text-[var(--color-accent-text)] flex items-center justify-center font-bold text-xs">
                     {getUserInitials()}
                   </div>
                   <div className="min-w-0">

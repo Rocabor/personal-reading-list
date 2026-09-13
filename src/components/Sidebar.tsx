@@ -116,7 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
             onClick={() => handleNavClick('library', 'all')}
             className="flex items-center gap-2.5 cursor-pointer select-none"
           >
-            <div className="w-8 h-8 rounded-lg bg-[var(--color-accent)] text-white flex items-center justify-center shadow-xs">
+            <div className="w-8 h-8 rounded-lg bg-[var(--color-accent)] text-[var(--color-accent-text)] flex items-center justify-center shadow-xs">
               <BookOpen className="w-4 h-4" />
             </div>
             <span className="font-heading font-bold text-lg text-[var(--color-text-primary)]">
@@ -173,7 +173,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
               />
               <button
                 type="submit"
-                className="px-2 py-1 rounded bg-[var(--color-accent)] text-white text-xs font-semibold"
+                className="px-2 py-1 rounded bg-[var(--color-accent)] text-[var(--color-accent-text)] text-xs font-semibold"
               >
                 Add
               </button>
@@ -324,7 +324,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
               />
               <button
                 type="submit"
-                className="px-2 py-0.5 rounded bg-[var(--color-accent)] text-white text-xs font-semibold"
+                className="px-2 py-0.5 rounded bg-[var(--color-accent)] text-[var(--color-accent-text)] text-xs font-semibold"
               >
                 Set
               </button>
@@ -370,7 +370,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
               />
               <button
                 type="submit"
-                className="px-2 py-0.5 rounded bg-[var(--color-accent)] text-white text-xs font-semibold"
+                className="px-2 py-0.5 rounded bg-[var(--color-accent)] text-[var(--color-accent-text)] text-xs font-semibold"
               >
                 Save
               </button>

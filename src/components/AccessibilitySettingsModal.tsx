@@ -117,7 +117,7 @@ export const AccessibilitySettingsModal: React.FC = () => {
         <div className="pt-3 border-t border-[var(--color-border)] flex justify-end">
           <button
             onClick={() => setIsA11yModalOpen(false)}
-            className="px-4 py-2 text-xs font-semibold rounded-xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]"
+            className="px-4 py-2 text-xs font-semibold rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hover)]"
           >
             Done
           </button>

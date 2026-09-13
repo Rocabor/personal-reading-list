@@ -133,7 +133,7 @@ export const AuthModal: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-semibold text-xs transition-colors shadow-xs mt-2"
+            className="w-full py-2.5 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-[var(--color-accent-text)] font-semibold text-xs transition-colors shadow-xs mt-2"
           >
             {mode === 'signin' && 'Sign In'}
             {mode === 'signup' && 'Create Account'}

@@ -85,7 +85,7 @@ export const YearInReview: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsExportCardModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--color-accent)] text-white text-xs sm:text-sm font-semibold hover:bg-[var(--color-accent-hover)] transition-all shadow-lg hover:shadow-xl hover:scale-102"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-text)] text-xs sm:text-sm font-semibold hover:bg-[var(--color-accent-hover)] transition-all shadow-lg hover:shadow-xl hover:scale-102"
               aria-label="Generate shareable reading card"
             >
               <Share2 className="w-4 h-4" /> Share Reading Card

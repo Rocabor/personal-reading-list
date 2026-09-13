@@ -127,7 +127,7 @@ export const ShelfView: React.FC = () => {
                 />
                 <button
                   onClick={handleSaveRename}
-                  className="p-1.5 bg-[var(--color-accent)] text-white rounded-lg hover:bg-[var(--color-accent-hover)]"
+                  className="p-1.5 bg-[var(--color-accent)] text-[var(--color-accent-text)] rounded-lg hover:bg-[var(--color-accent-hover)]"
                 >
                   <Check className="w-4 h-4" />
                 </button>
@@ -150,7 +150,7 @@ export const ShelfView: React.FC = () => {
                     setRenameValue(currentShelf.name);
                     setIsRenaming(true);
                   }}
-                  className="p-1 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] rounded"
+                  className="p-1.5 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] rounded"
                   title="Rename shelf"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
@@ -161,7 +161,7 @@ export const ShelfView: React.FC = () => {
                       deleteShelf(currentShelf.id);
                     }
                   }}
-                  className="p-1 text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] rounded"
+                  className="p-1.5 text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] rounded"
                   title="Delete shelf"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -186,7 +186,7 @@ export const ShelfView: React.FC = () => {
             {/* Add Book CTA */}
             <button
               onClick={() => setIsSearchModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] font-semibold shadow-2xs transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hover)] font-semibold shadow-2xs transition-colors whitespace-nowrap"
             >
               <Plus className="w-3.5 h-3.5" /> Add Book
             </button>
@@ -237,7 +237,7 @@ export const ShelfView: React.FC = () => {
               </select>
               <button
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                className="text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] font-mono text-[11px] px-0.5"
+                className="p-1.5 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)] font-mono text-[11px]"
                 title={`Order: ${sortOrder === 'asc' ? 'Ascending' : 'Descending'}`}
               >
                 {sortOrder === 'asc' ? '↑' : '↓'}
@@ -332,7 +332,7 @@ export const ShelfView: React.FC = () => {
               <button
                 onClick={() => bulkMoveShelves(targetMoveShelf)}
                 disabled={bulkSelectedIds.length === 0}
-                className="px-2.5 py-1 bg-[var(--color-accent)] text-white rounded font-medium hover:bg-[var(--color-accent-hover)] disabled:opacity-40"
+                className="px-2.5 py-1 bg-[var(--color-accent)] text-[var(--color-accent-text)] rounded font-medium hover:bg-[var(--color-accent-hover)] disabled:opacity-40"
               >
                 Move
               </button>
@@ -388,7 +388,7 @@ export const ShelfView: React.FC = () => {
           <div className="mt-5 flex justify-center gap-3">
             <button
               onClick={() => setIsSearchModalOpen(true)}
-              className="px-4 py-2 text-xs font-semibold rounded-xl bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] transition-colors shadow-xs"
+              className="px-4 py-2 text-xs font-semibold rounded-xl bg-[var(--color-accent)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hover)] transition-colors shadow-xs"
             >
               Search Books
             </button>

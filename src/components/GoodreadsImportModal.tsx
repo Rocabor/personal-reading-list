@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext';
 import { parseGoodreadsCsv } from '../services/goodreadsParser';
 import { SAMPLE_GOODREADS_CSV } from '../data/sampleGoodreadsCsv';
 import { GoodreadsImportResult, Book } from '../types';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 const IMPORT_CHUNK_SIZE = 10;
 
@@ -22,7 +23,10 @@ export const GoodreadsImportModal: React.FC = () => {
   const [shelfOverrides, setShelfOverrides] = useState<Record<string, string>>({});
   const [isImporting, setIsImporting] = useState(false);
   const [importProgress, setImportProgress] = useState(0);
+  const [importError, setImportError] = useState<string>('');
   const cancelledRef = useRef(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, isGoodreadsModalOpen);
 
   useEffect(() => {
     if (!isGoodreadsModalOpen) {
@@ -32,6 +36,7 @@ export const GoodreadsImportModal: React.FC = () => {
       setShelfOverrides({});
       setIsImporting(false);
       setImportProgress(0);
+      setImportError('');
     }
   }, [isGoodreadsModalOpen]);
 
@@ -49,21 +54,40 @@ export const GoodreadsImportModal: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     setFileName(file.name);
+    setImportError('');
     const reader = new FileReader();
     reader.onload = (event) => {
-      const text = event.target?.result as string;
-      const res = parseGoodreadsCsv(text, books);
-      setParsedResult(res);
-      rememberMapping(res);
+      try {
+        const text = event.target?.result as string;
+        const res = parseGoodreadsCsv(text, books);
+        setParsedResult(res);
+        rememberMapping(res);
+      } catch {
+        setImportError('Could not parse this file. Make sure it is a Goodreads export (.csv) and try again.');
+        setParsedResult(null);
+        setFileName('');
+      }
+    };
+    reader.onerror = () => {
+      setImportError('Could not read the selected file. Please try again with a valid .csv export.');
+      setParsedResult(null);
+      setFileName('');
     };
     reader.readAsText(file);
   };
 
   const handleLoadSampleCsv = () => {
     setFileName('sample-books.csv (Goodreads format)');
-    const res = parseGoodreadsCsv(SAMPLE_GOODREADS_CSV, books);
-    setParsedResult(res);
-    rememberMapping(res);
+    setImportError('');
+    try {
+      const res = parseGoodreadsCsv(SAMPLE_GOODREADS_CSV, books);
+      setParsedResult(res);
+      rememberMapping(res);
+    } catch {
+      setImportError('Could not load the sample CSV. Please try again.');
+      setParsedResult(null);
+      setFileName('');
+    }
   };
 
   const effectiveShelfId = (book: Book): string => {
@@ -82,6 +106,7 @@ export const GoodreadsImportModal: React.FC = () => {
     setParsedResult(null);
     setFileName('');
     setShelfOverrides({});
+    setImportError('');
   };
 
   const handleConfirmImport = () => {
@@ -140,6 +165,7 @@ export const GoodreadsImportModal: React.FC = () => {
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-labelledby="goodreads-modal-title"
@@ -178,6 +204,11 @@ export const GoodreadsImportModal: React.FC = () => {
         {/* Upload Box & Sample Action */}
         {!parsedResult ? (
           <div className="mt-6 space-y-4">
+            {importError && (
+              <p role="alert" className="px-4 py-3 rounded-xl text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50">
+                {importError}
+              </p>
+            )}
             <label
               htmlFor="csv-file-input"
               className="border-2 border-dashed border-[var(--color-border)] rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-secondary)]/60 transition-all text-center"
@@ -270,6 +301,7 @@ export const GoodreadsImportModal: React.FC = () => {
                             [s.goodreadsShelf]: e.target.value
                           }))
                         }
+                        aria-label={`Target Bookshelf shelf for Goodreads shelf "${s.goodreadsShelf}"`}
                         className="px-2.5 py-1.5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
                       >
                         {shelves.map((sh) => (

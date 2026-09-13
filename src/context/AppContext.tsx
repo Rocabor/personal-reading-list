@@ -187,12 +187,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       timestamp: new Date().toISOString(),
       details
     };
-    setActivities((prev) => {
-      const updated = [newAct, ...prev];
-      saveStoredActivities(userId, updated);
-      return updated;
-    });
-  }, [userId]);
+    const updated = [newAct, ...activities];
+    setActivities(updated);
+    saveStoredActivities(userId, updated);
+  }, [userId, activities]);
 
   const loginAsGuest = useCallback(() => {
     setCurrentUser(GUEST_USER);
@@ -252,63 +250,55 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [books, readingGoal, updateGoalCalculations]);
 
   const addBook = useCallback((book: Book) => {
-    setBooks(prev => {
-      const updated = [book, ...prev];
-      saveStoredBooks(userId, updated);
-      updateGoalCalculations(updated, readingGoal);
-      return updated;
-    });
+    const updated = [book, ...books];
+    setBooks(updated);
+    saveStoredBooks(userId, updated);
+    updateGoalCalculations(updated, readingGoal);
     logActivity('added', book.title, `Added to "${book.shelfId}" shelf`);
     showToast(`"${book.title}" added to your library!`);
-  }, [userId, logActivity, showToast, readingGoal, updateGoalCalculations]);
+  }, [books, userId, logActivity, showToast, readingGoal, updateGoalCalculations]);
 
   const bulkImportBooks = useCallback((incoming: Book[]) => {
     if (incoming.length === 0) return;
-    setBooks(prev => {
-      const updated = [...incoming, ...prev];
-      saveStoredBooks(userId, updated);
-      updateGoalCalculations(updated, readingGoal);
-      return updated;
-    });
-  }, [userId, readingGoal, updateGoalCalculations]);
+    const updated = [...incoming, ...books];
+    setBooks(updated);
+    saveStoredBooks(userId, updated);
+    updateGoalCalculations(updated, readingGoal);
+  }, [books, userId, readingGoal, updateGoalCalculations]);
 
   const updateBook = useCallback((id: string, updates: Partial<Book>) => {
-    setBooks(prev => {
-      const book = prev.find(b => b.id === id);
-      const updated = prev.map(b => (b.id === id ? { ...b, ...updates } : b));
-      saveStoredBooks(userId, updated);
-      updateGoalCalculations(updated, readingGoal);
+    const book = books.find(b => b.id === id);
+    const updated = books.map(b => (b.id === id ? { ...b, ...updates } : b));
+    setBooks(updated);
+    saveStoredBooks(userId, updated);
+    updateGoalCalculations(updated, readingGoal);
 
-      // Log a 'rated' activity whenever the user changes a book's rating
-      if (book && 'rating' in updates && updates.rating !== undefined && ((book as Book)?.rating ?? null) !== updates.rating) {
-        logActivity(
-          'rated',
-          book.title,
-          updates.rating ? `Rated ${updates.rating} out of 5 stars` : 'Removed rating'
-        );
-      }
-      return updated;
-    });
+    // Log a 'rated' activity whenever the user changes a book's rating
+    if (book && 'rating' in updates && updates.rating !== undefined && ((book as Book)?.rating ?? null) !== updates.rating) {
+      logActivity(
+        'rated',
+        book.title,
+        updates.rating ? `Rated ${updates.rating} out of 5 stars` : 'Removed rating'
+      );
+    }
     if (selectedBook && selectedBook.id === id) {
       setSelectedBook(prev => prev ? { ...prev, ...updates } : null);
     }
-  }, [userId, selectedBook, readingGoal, updateGoalCalculations, logActivity]);
+  }, [books, userId, selectedBook, readingGoal, updateGoalCalculations, logActivity]);
 
   const removeBook = useCallback((id: string) => {
-    setBooks(prev => {
-      const target = prev.find(b => b.id === id);
-      const updated = prev.filter(b => b.id !== id);
-      saveStoredBooks(userId, updated);
-      updateGoalCalculations(updated, readingGoal);
-      if (target) {
-        showToast(`Removed "${target.title}" from library.`);
-      }
-      return updated;
-    });
+    const target = books.find(b => b.id === id);
+    const updated = books.filter(b => b.id !== id);
+    setBooks(updated);
+    saveStoredBooks(userId, updated);
+    updateGoalCalculations(updated, readingGoal);
+    if (target) {
+      showToast(`Removed "${target.title}" from library.`);
+    }
     if (selectedBook && selectedBook.id === id) {
       setSelectedBook(null);
     }
-  }, [userId, selectedBook, readingGoal, updateGoalCalculations, showToast]);
+  }, [books, userId, selectedBook, readingGoal, updateGoalCalculations, showToast]);
 
   const moveBookToShelf = useCallback((bookId: string, targetShelfId: string) => {
     const book = books.find(b => b.id === bookId);
@@ -349,8 +339,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const updateReadingProgress = useCallback((bookId: string, currentPage: number, totalPages?: number) => {
     // Compute percentage once so both the books state and the open modal stay in sync
-    const bookSnapshot = books.find(b => b.id === bookId);
-    const pagesTotal = totalPages ?? bookSnapshot?.pageCount ?? null;
+    const book = books.find(b => b.id === bookId);
+    const pagesTotal = totalPages ?? book?.pageCount ?? null;
     let percentage = 0;
     if (pagesTotal && pagesTotal > 0) {
       percentage = Math.min(100, Math.max(0, Math.round((currentPage / pagesTotal) * 100)));
@@ -358,33 +348,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       percentage = Math.min(100, Math.max(0, currentPage)); // fallback percentage
     }
 
-    setBooks(prev => {
-      const book = prev.find(b => b.id === bookId);
-      if (!book) return prev;
+    if (!book) return;
 
-      const updates: Partial<Book> = {
-        currentPage,
-        percentage,
-        lastProgressUpdate: new Date().toISOString()
-      };
+    const updates: Partial<Book> = {
+      currentPage,
+      percentage,
+      lastProgressUpdate: new Date().toISOString()
+    };
 
-      if (percentage >= 100) {
-        updates.shelfId = 'read';
-        updates.dateRead = new Date().toISOString().slice(0, 10);
-        updates.readCount = (book.readCount || 0) + 1;
-        triggerConfetti();
-        logActivity('finished', book.title, `Finished reading! 100% of ${pagesTotal || 'book'} pages completed.`);
-        showToast(`Hooray! You finished "${book.title}"!`);
-      } else {
-        logActivity('progress', book.title, `Progress updated: page ${currentPage} (${percentage}%)`);
-        showToast(`Updated progress for "${book.title}": ${percentage}%`);
-      }
+    if (percentage >= 100) {
+      updates.shelfId = 'read';
+      updates.dateRead = new Date().toISOString().slice(0, 10);
+      updates.readCount = (book.readCount || 0) + 1;
+      triggerConfetti();
+      logActivity('finished', book.title, `Finished reading! 100% of ${pagesTotal || 'book'} pages completed.`);
+      showToast(`Hooray! You finished "${book.title}"!`);
+    } else {
+      logActivity('progress', book.title, `Progress updated: page ${currentPage} (${percentage}%)`);
+      showToast(`Updated progress for "${book.title}": ${percentage}%`);
+    }
 
-      const updated = prev.map(b => (b.id === bookId ? { ...b, ...updates } : b));
-      saveStoredBooks(userId, updated);
-      updateGoalCalculations(updated, readingGoal);
-      return updated;
-    });
+    const updated = books.map(b => (b.id === bookId ? { ...b, ...updates } : b));
+    setBooks(updated);
+    saveStoredBooks(userId, updated);
+    updateGoalCalculations(updated, readingGoal);
 
     // Keep the open detail modal in sync with the latest progress
     if (selectedBook && selectedBook.id === bookId) {
@@ -435,11 +422,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       return;
     }
     // Reassign books on this shelf to 'to-read'
-    setBooks(prev => {
-      const updatedBooks = prev.map(b => (b.shelfId === id ? { ...b, shelfId: 'to-read' } : b));
-      saveStoredBooks(userId, updatedBooks);
-      return updatedBooks;
-    });
+    const updatedBooks = books.map(b => (b.shelfId === id ? { ...b, shelfId: 'to-read' } : b));
+    setBooks(updatedBooks);
+    saveStoredBooks(userId, updatedBooks);
     const updatedShelves = shelves.filter(s => s.id !== id);
     setShelves(updatedShelves);
     saveStoredShelves(userId, updatedShelves);
@@ -447,7 +432,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setActiveShelfId('all');
     }
     showToast(`Deleted shelf "${shelfToDelete.name}". Its books were moved to "Want to Read".`);
-  }, [shelves, userId, activeShelfId, showToast]);
+  }, [shelves, books, userId, activeShelfId, showToast]);
 
   const updateReadingGoal = useCallback((target: number) => {
     const currentYearStr = (readingGoal?.year ?? new Date().getFullYear()).toString();
@@ -477,18 +462,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [userId, logActivity, showToast]);
 
   const moveShelf = useCallback((shelfId: string, direction: 'up' | 'down') => {
-    setShelves(prev => {
-      const idx = prev.findIndex(s => s.id === shelfId);
-      if (idx < 0) return prev;
-      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
-      if (targetIdx < 0 || targetIdx >= prev.length) return prev;
-      const next = [...prev];
-      [next[idx], next[targetIdx]] = [next[targetIdx], next[idx]];
-      const withPositions = next.map((s, i) => ({ ...s, position: i }));
-      saveStoredShelves(userId, withPositions);
-      return withPositions;
-    });
-  }, [userId]);
+    const idx = shelves.findIndex(s => s.id === shelfId);
+    if (idx < 0) return;
+    const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (targetIdx < 0 || targetIdx >= shelves.length) return;
+    const next = [...shelves];
+    [next[idx], next[targetIdx]] = [next[targetIdx], next[idx]];
+    const withPositions = next.map((s, i) => ({ ...s, position: i }));
+    setShelves(withPositions);
+    saveStoredShelves(userId, withPositions);
+  }, [shelves, userId]);
 
   const setTheme = useCallback((t: 'light' | 'dark' | 'system') => {
     setThemeState(t);
@@ -496,57 +479,49 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, []);
 
   const updateA11ySettings = useCallback((updates: Partial<AccessibilitySettings>) => {
-    setA11ySettingsState(prev => {
-      const next = { ...prev, ...updates };
-      saveA11ySettings(next);
-      return next;
-    });
-  }, []);
+    const next = { ...a11ySettings, ...updates };
+    setA11ySettingsState(next);
+    saveA11ySettings(next);
+  }, [a11ySettings]);
 
   // Bulk actions
   const bulkMoveShelves = useCallback((targetShelfId: string) => {
     if (bulkSelectedIds.length === 0) return;
-    setBooks(prev => {
-      const updated = prev.map(b => (bulkSelectedIds.includes(b.id) ? { ...b, shelfId: targetShelfId } : b));
-      saveStoredBooks(userId, updated);
-      updateGoalCalculations(updated, readingGoal);
-      return updated;
-    });
+    const updated = books.map(b => (bulkSelectedIds.includes(b.id) ? { ...b, shelfId: targetShelfId } : b));
+    setBooks(updated);
+    saveStoredBooks(userId, updated);
+    updateGoalCalculations(updated, readingGoal);
     showToast(`Moved ${bulkSelectedIds.length} books to chosen shelf.`);
     setBulkSelectedIds([]);
-  }, [bulkSelectedIds, userId, readingGoal, updateGoalCalculations, showToast]);
+  }, [books, bulkSelectedIds, userId, readingGoal, updateGoalCalculations, showToast]);
 
   const bulkDeleteBooks = useCallback((() => {
     if (bulkSelectedIds.length === 0) return;
-    setBooks(prev => {
-      const updated = prev.filter(b => !bulkSelectedIds.includes(b.id));
-      saveStoredBooks(userId, updated);
-      updateGoalCalculations(updated, readingGoal);
-      return updated;
-    });
+    const updated = books.filter(b => !bulkSelectedIds.includes(b.id));
+    setBooks(updated);
+    saveStoredBooks(userId, updated);
+    updateGoalCalculations(updated, readingGoal);
     showToast(`Deleted ${bulkSelectedIds.length} books from your library.`);
     setBulkSelectedIds([]);
-  }), [bulkSelectedIds, userId, readingGoal, updateGoalCalculations, showToast]);
+  }), [books, bulkSelectedIds, userId, readingGoal, updateGoalCalculations, showToast]);
 
   const bulkAddGenre = useCallback((genre: string) => {
     const trimmed = genre.trim();
     if (!trimmed || bulkSelectedIds.length === 0) return;
-    setBooks(prev => {
-      const updated = prev.map(b => {
-        if (bulkSelectedIds.includes(b.id)) {
-          const currentGenres = b.genres || [];
-          if (!currentGenres.includes(trimmed)) {
-            return { ...b, genres: [...currentGenres, trimmed] };
-          }
+    const updated = books.map(b => {
+      if (bulkSelectedIds.includes(b.id)) {
+        const currentGenres = b.genres || [];
+        if (!currentGenres.includes(trimmed)) {
+          return { ...b, genres: [...currentGenres, trimmed] };
         }
-        return b;
-      });
-      saveStoredBooks(userId, updated);
-      return updated;
+      }
+      return b;
     });
+    setBooks(updated);
+    saveStoredBooks(userId, updated);
     showToast(`Added genre "${trimmed}" to ${bulkSelectedIds.length} books.`);
     setBulkSelectedIds([]);
-  }, [bulkSelectedIds, userId, showToast]);
+  }, [books, bulkSelectedIds, userId, showToast]);
 
   // Global keyboard shortcut: Cmd/Ctrl + K opens internal library search
   useEffect(() => {

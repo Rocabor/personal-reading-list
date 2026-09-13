@@ -39,6 +39,7 @@ interface AppContextType {
   updateA11ySettings: (settings: Partial<AccessibilitySettings>) => void;
   activities: ActivityEvent[];
   addBook: (book: Book) => void;
+  bulkImportBooks: (books: Book[]) => void;
   updateBook: (id: string, updates: Partial<Book>) => void;
   removeBook: (id: string) => void;
   moveBookToShelf: (bookId: string, targetShelfId: string) => void;
@@ -231,13 +232,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const updateGoalCalculations = useCallback((currentBooks: Book[], currentGoal: ReadingGoal | null) => {
     if (!currentGoal) return;
     const currentYearStr = currentGoal.year.toString();
-    const completedThisYear = currentBooks.filter(b => {
-      const isCompletedShelf = b.shelfId === 'read' || b.shelfId === 'favorites';
-      if (!isCompletedShelf) return false;
-      if (b.dateRead && b.dateRead.startsWith(currentYearStr)) return true;
-      // If dateRead missing, count if on completed shelf
-      return true;
-    }).length;
+    // Only count books actually read (finished) during the goal year
+    const completedThisYear = currentBooks.filter(b =>
+      b.dateRead && b.dateRead.startsWith(currentYearStr)
+    ).length;
 
     if (completedThisYear !== currentGoal.completedCount) {
       const updated = { ...currentGoal, completedCount: completedThisYear };
@@ -245,6 +243,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       saveStoredGoal(userId, updated);
     }
   }, [userId]);
+
+  // Sync the goal's completed count against the library on load and after every data change
+  useEffect(() => {
+    updateGoalCalculations(books, readingGoal);
+  }, [books, readingGoal, updateGoalCalculations]);
 
   const addBook = useCallback((book: Book) => {
     setBooks(prev => {
@@ -257,17 +260,37 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     showToast(`"${book.title}" added to your library!`);
   }, [userId, logActivity, showToast, readingGoal, updateGoalCalculations]);
 
+  const bulkImportBooks = useCallback((incoming: Book[]) => {
+    if (incoming.length === 0) return;
+    setBooks(prev => {
+      const updated = [...incoming, ...prev];
+      saveStoredBooks(userId, updated);
+      updateGoalCalculations(updated, readingGoal);
+      return updated;
+    });
+  }, [userId, readingGoal, updateGoalCalculations]);
+
   const updateBook = useCallback((id: string, updates: Partial<Book>) => {
     setBooks(prev => {
+      const book = prev.find(b => b.id === id);
       const updated = prev.map(b => (b.id === id ? { ...b, ...updates } : b));
       saveStoredBooks(userId, updated);
       updateGoalCalculations(updated, readingGoal);
+
+      // Log a 'rated' activity whenever the user changes a book's rating
+      if (book && 'rating' in updates && updates.rating !== undefined && ((book as Book)?.rating ?? null) !== updates.rating) {
+        logActivity(
+          'rated',
+          book.title,
+          updates.rating ? `Rated ${updates.rating} out of 5 stars` : 'Removed rating'
+        );
+      }
       return updated;
     });
     if (selectedBook && selectedBook.id === id) {
       setSelectedBook(prev => prev ? { ...prev, ...updates } : null);
     }
-  }, [userId, selectedBook, readingGoal, updateGoalCalculations]);
+  }, [userId, selectedBook, readingGoal, updateGoalCalculations, logActivity]);
 
   const removeBook = useCallback((id: string) => {
     setBooks(prev => {
@@ -319,17 +342,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [userId, triggerConfetti, logActivity, showToast, readingGoal, updateGoalCalculations]);
 
   const updateReadingProgress = useCallback((bookId: string, currentPage: number, totalPages?: number) => {
+    // Compute percentage once so both the books state and the open modal stay in sync
+    const bookSnapshot = books.find(b => b.id === bookId);
+    const pagesTotal = totalPages ?? bookSnapshot?.pageCount ?? null;
+    let percentage = 0;
+    if (pagesTotal && pagesTotal > 0) {
+      percentage = Math.min(100, Math.max(0, Math.round((currentPage / pagesTotal) * 100)));
+    } else {
+      percentage = Math.min(100, Math.max(0, currentPage)); // fallback percentage
+    }
+
     setBooks(prev => {
       const book = prev.find(b => b.id === bookId);
       if (!book) return prev;
-
-      const pagesTotal = totalPages ?? book.pageCount ?? null;
-      let percentage = 0;
-      if (pagesTotal && pagesTotal > 0) {
-        percentage = Math.min(100, Math.max(0, Math.round((currentPage / pagesTotal) * 100)));
-      } else {
-        percentage = Math.min(100, Math.max(0, currentPage)); // fallback percentage
-      }
 
       const updates: Partial<Book> = {
         currentPage,
@@ -354,7 +379,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       updateGoalCalculations(updated, readingGoal);
       return updated;
     });
-  }, [userId, triggerConfetti, logActivity, showToast, readingGoal, updateGoalCalculations]);
+
+    // Keep the open detail modal in sync with the latest progress
+    if (selectedBook && selectedBook.id === bookId) {
+      setSelectedBook(prev => {
+        if (!prev) return null;
+        const updated: Book = { ...prev };
+        if (percentage >= 100) {
+          updated.shelfId = 'read';
+          updated.dateRead = new Date().toISOString().slice(0, 10);
+          updated.readCount = (prev.readCount || 0) + 1;
+        }
+        updated.currentPage = currentPage;
+        updated.percentage = percentage;
+        updated.lastProgressUpdate = new Date().toISOString();
+        return updated;
+      });
+    }
+  }, [userId, books, triggerConfetti, logActivity, showToast, readingGoal, updateGoalCalculations, selectedBook]);
 
   const createShelf = useCallback((name: string) => {
     const trimmed = name.trim();
@@ -403,12 +445,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const updateReadingGoal = useCallback((target: number) => {
     const currentYearStr = (readingGoal?.year ?? new Date().getFullYear()).toString();
-    const completedThisYear = books.filter(b => {
-      const isCompletedShelf = b.shelfId === 'read' || b.shelfId === 'favorites';
-      if (!isCompletedShelf) return false;
-      if (b.dateRead && b.dateRead.startsWith(currentYearStr)) return true;
-      return true;
-    }).length;
+    // Only count books actually read (finished) during the goal year
+    const completedThisYear = books.filter(b =>
+      b.dateRead && b.dateRead.startsWith(currentYearStr)
+    ).length;
     const updated: ReadingGoal = {
       year: readingGoal?.year ?? new Date().getFullYear(),
       targetCount: target,
@@ -545,6 +585,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         updateA11ySettings,
         activities,
         addBook,
+        bulkImportBooks,
         updateBook,
         removeBook,
         moveBookToShelf,

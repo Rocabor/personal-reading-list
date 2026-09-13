@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, X, Loader2, Plus, Check, BookOpen, AlertCircle } from 'lucide-react';
 import { searchOpenLibrary, convertSearchResultToBook, SearchResultItem } from '../services/openLibrary';
 import { useApp } from '../context/AppContext';
+import { BookCover } from './BookCover';
 
 export const SearchModal: React.FC = () => {
   const { isSearchModalOpen, setIsSearchModalOpen, books, addBook, shelves } = useApp();
@@ -170,21 +171,13 @@ export const SearchModal: React.FC = () => {
                 className="flex items-center gap-3.5 p-3 rounded-xl border border-[var(--color-border-subtle)] hover:bg-[var(--color-bg-secondary)] transition-colors"
               >
                 {/* Thumbnail */}
-                <div className="w-12 h-18 rounded bg-[var(--color-bg-tertiary)] flex-shrink-0 overflow-hidden flex items-center justify-center border border-[var(--color-border)] shadow-2xs">
-                  {item.coverUrl ? (
-                    <img
-                      src={item.coverUrl}
-                      alt={item.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <BookOpen className="w-5 h-5 text-[var(--color-text-tertiary)]" />
-                  )}
-                </div>
+                <BookCover
+                  title={item.title}
+                  author={item.author}
+                  coverUrl={item.coverUrl}
+                  size="sm"
+                  className="rounded"
+                />
 
                 {/* Details */}
                 <div className="flex-1 min-w-0">

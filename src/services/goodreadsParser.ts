@@ -76,7 +76,8 @@ export function sanitizeHtml(html?: string): string | undefined {
  */
 export function parseGoodreadsCsv(
   csvText: string,
-  existingBooks: Book[] = []
+  existingBooks: Book[] = [],
+  options?: { shelfMap?: Record<string, string> }
 ): GoodreadsImportResult {
   const rows = parseCsvRows(csvText);
   if (rows.length < 2) {
@@ -85,7 +86,8 @@ export function parseGoodreadsCsv(
       addedCount: 0,
       duplicateCount: 0,
       skippedCount: 0,
-      books: []
+      books: [],
+      shelves: []
     };
   }
 
@@ -114,6 +116,7 @@ export function parseGoodreadsCsv(
   const newBooks: Book[] = [];
   let duplicateCount = 0;
   let skippedCount = 0;
+  const shelfCounts: Record<string, { count: number; bookIds: string[] }> = {};
 
   for (let r = 1; r < rows.length; r++) {
     const row = rows[r];
@@ -161,11 +164,28 @@ export function parseGoodreadsCsv(
     const rawExclusive = colIndex.exclusiveShelf >= 0 ? (row[colIndex.exclusiveShelf] || '').trim().toLowerCase() : '';
     const rawShelves = colIndex.bookshelves >= 0 ? (row[colIndex.bookshelves] || '').toLowerCase() : '';
     
+    // Custom (non-default) bookshelves applied to this row
+    const customShelfNames = rawShelves
+      .split(',')
+      .map((s: string) => s.trim().toLowerCase())
+      .filter((s: string) => s && s !== 'read' && s !== 'to-read' && s !== 'currently-reading' && s !== 'favorites');
+    
     let shelfId = 'to-read';
     if (rawExclusive === 'read' || rawExclusive === 'currently-reading' || rawExclusive === 'to-read') {
       shelfId = rawExclusive;
     } else if (rawShelves.includes('favorites')) {
       shelfId = 'favorites';
+    }
+
+    // Apply the user's custom bookshelf mapping (only for unread/catch-all books)
+    if (shelfId === 'to-read' && options?.shelfMap && customShelfNames.length > 0) {
+      for (const shelfName of customShelfNames) {
+        const mapped = options.shelfMap[shelfName];
+        if (mapped) {
+          shelfId = mapped;
+          break;
+        }
+      }
     }
 
     // Rating: 0 means unrated
@@ -221,6 +241,15 @@ export function parseGoodreadsCsv(
     };
 
     newBooks.push(book);
+
+    // Track custom bookshelves for the mapping UI
+    for (const shelfName of customShelfNames) {
+      if (!shelfCounts[shelfName]) {
+        shelfCounts[shelfName] = { count: 0, bookIds: [] };
+      }
+      shelfCounts[shelfName].count += 1;
+      shelfCounts[shelfName].bookIds.push(book.id);
+    }
   }
 
   return {
@@ -228,6 +257,11 @@ export function parseGoodreadsCsv(
     addedCount: newBooks.length,
     duplicateCount,
     skippedCount,
-    books: newBooks
+    books: newBooks,
+    shelves: Object.entries(shelfCounts).map(([goodreadsShelf, info]) => ({
+      goodreadsShelf,
+      count: info.count,
+      bookIds: info.bookIds
+    }))
   };
 }

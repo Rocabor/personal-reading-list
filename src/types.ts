@@ -95,6 +95,11 @@ export interface GoodreadsImportResult {
   duplicateCount: number;
   skippedCount: number;
   books: Book[];
+  /**
+   * Custom Goodreads bookshelves found in the file, grouped with the ids of the
+   * books that carry them, so the UI can offer a shelf mapping before importing.
+   */
+  shelves: { goodreadsShelf: string; count: number; bookIds: string[] }[];
 }
 
 export interface AccessibilitySettings {

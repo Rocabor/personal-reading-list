@@ -13,11 +13,14 @@ export const GUEST_USER: UserProfile = {
   isGuest: true
 };
 
-export const DEFAULT_GOAL: ReadingGoal = {
-  year: 2026,
-  targetCount: 24,
-  completedCount: 15
-};
+export const DEFAULT_GOAL: ReadingGoal = (() => {
+  const currentYear = new Date().getFullYear();
+  return {
+    year: currentYear,
+    targetCount: 24,
+    completedCount: 0
+  };
+})();
 
 export const DEFAULT_A11Y: AccessibilitySettings = {
   fontSize: 'normal',

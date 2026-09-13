@@ -3,6 +3,15 @@ import { motion } from 'motion/react';
 import { BookOpen } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
+/**
+ * Maps a Bookshelf cover to a lighter Open Library variant (-S/-M/-L)
+ * so grid thumbnails don't download large images.
+ */
+function resolveCoverSize(url: string | null | undefined, wanted: 'S' | 'M' | 'L'): string | undefined {
+  if (!url) return undefined;
+  return url.replace(/-(S|M|L)(\.(?:jpe?g|png|gif|webp))$/i, `-${wanted}$2`);
+}
+
 interface BookCoverProps {
   title: string;
   author: string;
@@ -34,7 +43,9 @@ export const BookCover: React.FC<BookCoverProps> = ({
     xl: 'w-52 h-78 sm:w-60 sm:h-90 text-base'
   };
 
-  const hasValidImage = coverUrl && !imageError;
+  const wantedSize = size === 'sm' ? 'S' : size === 'md' ? 'M' : 'L';
+  const coverSrc = resolveCoverSize(coverUrl, wantedSize);
+  const hasValidImage = coverSrc && !imageError;
 
   return (
     <motion.div
@@ -59,7 +70,7 @@ export const BookCover: React.FC<BookCoverProps> = ({
 
       {hasValidImage ? (
         <img
-          src={coverUrl}
+          src={coverSrc}
           alt={`Cover of ${title} by ${author}`}
           loading="lazy"
           onError={() => setImageError(true)}

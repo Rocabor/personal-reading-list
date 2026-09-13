@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, X, BookOpen, Star, Filter } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { Book } from '../types';
+import { BookCover } from './BookCover';
 
 export const LibrarySearchModal: React.FC = () => {
   const { isLibrarySearchOpen, setIsLibrarySearchOpen, books, shelves, setSelectedBook } = useApp();
@@ -163,15 +164,7 @@ export const LibrarySearchModal: React.FC = () => {
                   className="flex items-center justify-between p-3 rounded-xl border border-[var(--color-border-subtle)] hover:bg-[var(--color-bg-secondary)] cursor-pointer transition-colors"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-14 bg-[var(--color-bg-tertiary)] rounded flex-shrink-0 overflow-hidden border border-[var(--color-border)] shadow-2xs">
-                      {b.coverUrl ? (
-                        <img src={b.coverUrl} alt={b.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[9px] font-heading text-center p-1 leading-none text-[var(--color-text-primary)]">
-                          {b.title.slice(0, 10)}
-                        </div>
-                      )}
-                    </div>
+                    <BookCover title={b.title} author={b.author} coverUrl={b.coverUrl} size="sm" />
                     <div className="min-w-0">
                       <h3 className="font-heading font-semibold text-sm text-[var(--color-text-primary)] truncate">
                         {b.title}

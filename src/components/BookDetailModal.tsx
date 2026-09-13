@@ -173,7 +173,7 @@ export const BookDetailModal: React.FC = () => {
                   {selectedBook.isbn13}
                 </div>
               )}
-              {selectedBook.dateRead && (
+              {selectedBook.dateRead && selectedBook.shelfId !== 'currently-reading' && (
                 <div>
                   <span className="font-semibold text-[var(--color-text-secondary)]">Finished:</span>{' '}
                   {selectedBook.dateRead}

@@ -130,19 +130,19 @@ export const GoodreadsImportModal: React.FC = () => {
     cancelledRef.current = false;
 
     let index = 0;
+    const accumulated: Book[] = [];
     const nextChunk = () => {
       if (cancelledRef.current) {
+        if (accumulated.length > 0) bulkImportBooks(accumulated);
         setIsImporting(false);
         setParsedResult(null);
         setFileName('');
         setShelfOverrides({});
-        showToast(`Import cancelled — ${index} of ${finalBooks.length} books were added.`);
+        showToast(`Import cancelled — ${accumulated.length} of ${finalBooks.length} books were added.`);
         return;
       }
       const batch = finalBooks.slice(index, index + IMPORT_CHUNK_SIZE);
-      if (batch.length > 0) {
-        bulkImportBooks(batch);
-      }
+      accumulated.push(...batch);
       index += batch.length;
       setImportProgress(
         finalBooks.length === 0 ? 100 : Math.min(100, Math.round((index / finalBooks.length) * 100))
@@ -151,6 +151,7 @@ export const GoodreadsImportModal: React.FC = () => {
       if (index < finalBooks.length) {
         requestAnimationFrame(nextChunk);
       } else {
+        bulkImportBooks(accumulated);
         setIsImporting(false);
         setParsedResult(null);
         setFileName('');

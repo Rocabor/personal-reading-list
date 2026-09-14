@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Bookmark, CheckCircle, ChevronRight, Plus } from 'lucide-react';
 import { Book } from '../types';
-import { useApp } from '../context/AppContext';
+import { useAppData } from '../context/AppContext';
 
 interface ReadingProgressBarProps {
   book: Book;
@@ -9,7 +9,7 @@ interface ReadingProgressBarProps {
 }
 
 export const ReadingProgressBar: React.FC<ReadingProgressBarProps> = ({ book, compact = false }) => {
-  const { updateReadingProgress } = useApp();
+  const { updateReadingProgress } = useAppData();
   const [isEditing, setIsEditing] = useState(false);
   const [inputPage, setInputPage] = useState<number>(book.currentPage || 0);
 

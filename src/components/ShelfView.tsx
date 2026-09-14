@@ -19,6 +19,14 @@ import { BookCover } from './BookCover';
 import { useApp } from '../context/AppContext';
 import { useViewHeadingFocus } from '../hooks/useViewHeadingFocus';
 
+const RATING_FILTER_VALUES = [3, 4, 5] as const;
+
+const parseRatingFilter = (value: string): number | 'all' => {
+  if (value === 'all') return 'all';
+  const parsed = Number(value);
+  return (RATING_FILTER_VALUES as readonly number[]).includes(parsed) ? parsed : 'all';
+};
+
 export const ShelfView: React.FC = () => {
   const {
     books,
@@ -269,9 +277,7 @@ export const ShelfView: React.FC = () => {
             <div className="flex items-center gap-1 border border-[var(--color-border)] rounded-xl px-2.5 py-1.5 bg-[var(--color-surface)]">
               <select
                 value={ratingFilter}
-                onChange={(e) =>
-                  setRatingFilter(e.target.value === 'all' ? 'all' : (parseInt(e.target.value, 10) as any))
-                }
+                onChange={(e) => setRatingFilter(parseRatingFilter(e.target.value))}
                 className="bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] rounded-lg text-xs cursor-pointer"
                 aria-label="Filter by rating"
               >

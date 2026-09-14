@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { BookOpen } from 'lucide-react';
-import { useApp } from '../context/AppContext';
+import { useAppUI } from '../context/AppContext';
 
 /**
  * Maps a Bookshelf cover to a lighter Open Library variant (-S/-M/-L)
@@ -34,7 +34,7 @@ export const BookCover: React.FC<BookCoverProps> = ({
   onClick
 }) => {
   const [imageError, setImageError] = useState(false);
-  const { a11ySettings } = useApp();
+  const { a11ySettings } = useAppUI();
 
   const sizeClasses = {
     sm: 'w-16 h-24 text-[10px]',

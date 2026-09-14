@@ -275,7 +275,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
               <span>Year in Review</span>
             </span>
             <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 font-semibold">
-              2026
+              {new Date().getFullYear()}
             </span>
           </button>
 

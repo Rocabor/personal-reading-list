@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef, useMemo } from 'react';
 import { Book, Shelf, ReadingGoal, ActivityEvent, UserProfile, AccessibilitySettings, ShelfId } from '../types';
 import {
   getCurrentUser,
@@ -18,24 +18,16 @@ import {
   saveA11ySettings
 } from '../services/storage';
 
-interface AppContextType {
+type ViewType = 'library' | 'year-in-review' | 'activity' | 'landing';
+
+export interface DataContextType {
   user: UserProfile | null;
   loginAsGuest: () => void;
   loginUser: (email: string, name?: string) => void;
   logout: () => void;
   books: Book[];
   shelves: Shelf[];
-  activeShelfId: ShelfId | 'all';
-  setActiveShelfId: (id: ShelfId | 'all') => void;
-  activeView: 'library' | 'year-in-review' | 'activity' | 'landing';
-  setActiveView: (view: 'library' | 'year-in-review' | 'activity' | 'landing') => void;
   readingGoal: ReadingGoal | null;
-  updateReadingGoal: (target: number) => void;
-  clearReadingGoal: () => void;
-  theme: 'light' | 'dark' | 'system';
-  setTheme: (theme: 'light' | 'dark' | 'system') => void;
-  a11ySettings: AccessibilitySettings;
-  updateA11ySettings: (settings: Partial<AccessibilitySettings>) => void;
   activities: ActivityEvent[];
   addBook: (book: Book) => void;
   bulkImportBooks: (books: Book[]) => void;
@@ -47,6 +39,20 @@ interface AppContextType {
   renameShelf: (id: string, newName: string) => void;
   deleteShelf: (id: string) => void;
   moveShelf: (shelfId: string, direction: 'up' | 'down') => void;
+  updateReadingGoal: (target: number) => void;
+  clearReadingGoal: () => void;
+  bulkSelectedIds: string[];
+  setBulkSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
+  bulkMoveShelves: (targetShelfId: string) => void;
+  bulkDeleteBooks: () => void;
+  bulkAddGenre: (genre: string) => void;
+}
+
+export interface UIContextType {
+  activeView: ViewType;
+  setActiveView: (view: ViewType) => void;
+  activeShelfId: ShelfId | 'all';
+  setActiveShelfId: (id: ShelfId | 'all') => void;
   selectedBook: Book | null;
   setSelectedBook: (book: Book | null) => void;
   isSearchModalOpen: boolean;
@@ -64,14 +70,45 @@ interface AppContextType {
   toastMessage: string | null;
   showToast: (msg: string) => void;
   triggerConfetti: () => void;
-  bulkSelectedIds: string[];
-  setBulkSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
-  bulkMoveShelves: (targetShelfId: string) => void;
-  bulkDeleteBooks: () => void;
-  bulkAddGenre: (genre: string) => void;
+  theme: 'light' | 'dark' | 'system';
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  a11ySettings: AccessibilitySettings;
+  updateA11ySettings: (settings: Partial<AccessibilitySettings>) => void;
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+const DataContext = createContext<DataContextType | undefined>(undefined);
+const UIContext = createContext<UIContextType | undefined>(undefined);
+
+interface ShelfTransition {
+  updates: Partial<Book>;
+  finished: boolean;
+  started: boolean;
+}
+
+function getShelfTransition(book: Book, targetShelfId: string): ShelfTransition {
+  const wasRead = book.shelfId === 'read' || book.shelfId === 'favorites';
+  const isNowRead = targetShelfId === 'read' || targetShelfId === 'favorites';
+
+  const updates: Partial<Book> = {
+    shelfId: targetShelfId
+  };
+
+  if (isNowRead && !wasRead) {
+    updates.dateRead = new Date().toISOString().slice(0, 10);
+    updates.percentage = 100;
+    if (book.pageCount) updates.currentPage = book.pageCount;
+    updates.readCount = (book.readCount || 0) + 1;
+    return { updates, finished: true, started: false };
+  }
+
+  if (targetShelfId === 'currently-reading' && book.shelfId !== 'currently-reading') {
+    if (!book.currentPage) updates.currentPage = 1;
+    updates.percentage = book.pageCount ? Math.round((1 / book.pageCount) * 100) : 5;
+    return { updates, finished: false, started: true };
+  }
+
+  return { updates, finished: false, started: false };
+}
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUserState] = useState<UserProfile | null>(() => getCurrentUser());
@@ -99,6 +136,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [isExportCardModalOpen, setIsExportCardModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [bulkSelectedIds, setBulkSelectedIds] = useState<string[]>([]);
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Apply Theme
   useEffect(() => {
@@ -162,8 +200,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const showToast = useCallback((msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => {
-      setToastMessage((prev) => (prev === msg ? null : prev));
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    toastTimeoutRef.current = setTimeout(() => {
+      setToastMessage(null);
+      toastTimeoutRef.current = null;
     }, 3800);
   }, []);
 
@@ -262,9 +302,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const bulkImportBooks = useCallback((incoming: Book[]) => {
     if (incoming.length === 0) return;
+    setBooks((prev) => {
+      const updated = [...incoming, ...prev];
+      booksRef.current = updated;
+      return updated;
+    });
     const updated = [...incoming, ...booksRef.current];
-    booksRef.current = updated;
-    setBooks(updated);
     saveStoredBooks(userId, updated);
     updateGoalCalculations(updated, readingGoal);
   }, [userId, readingGoal, updateGoalCalculations]);
@@ -307,24 +350,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const book = books.find(b => b.id === bookId);
     if (!book) return;
 
-    const wasRead = book.shelfId === 'read' || book.shelfId === 'favorites';
-    const isNowRead = targetShelfId === 'read' || targetShelfId === 'favorites';
+    const { updates, finished, started } = getShelfTransition(book, targetShelfId);
 
-    const updates: Partial<Book> = {
-      shelfId: targetShelfId
-    };
-
-    if (isNowRead && !wasRead) {
-      updates.dateRead = new Date().toISOString().slice(0, 10);
-      updates.percentage = 100;
-      if (book.pageCount) updates.currentPage = book.pageCount;
-      updates.readCount = (book.readCount || 0) + 1;
+    if (finished) {
       triggerConfetti();
       logActivity('finished', book.title, 'Marked as completed!');
       showToast(`Congratulations on finishing "${book.title}"!`);
-    } else if (targetShelfId === 'currently-reading' && book.shelfId !== 'currently-reading') {
-      if (!book.currentPage) updates.currentPage = 1;
-      updates.percentage = book.pageCount ? Math.round((1 / book.pageCount) * 100) : 5;
+    } else if (started) {
       logActivity('started', book.title, 'Started reading');
       showToast(`Started reading "${book.title}"`);
     }
@@ -490,13 +522,35 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   // Bulk actions
   const bulkMoveShelves = useCallback((targetShelfId: string) => {
     if (bulkSelectedIds.length === 0) return;
-    const updated = books.map(b => (bulkSelectedIds.includes(b.id) ? { ...b, shelfId: targetShelfId } : b));
+
+    const finishedBooks: Book[] = [];
+    const startedBooks: Book[] = [];
+    const updated = books.map(b => {
+      if (!bulkSelectedIds.includes(b.id)) return b;
+      const { updates, finished, started } = getShelfTransition(b, targetShelfId);
+      const next = { ...b, ...updates };
+      if (finished) finishedBooks.push(next);
+      else if (started) startedBooks.push(next);
+      return next;
+    });
+
     setBooks(updated);
     saveStoredBooks(userId, updated);
     updateGoalCalculations(updated, readingGoal);
-    showToast(`Moved ${bulkSelectedIds.length} books to chosen shelf.`);
+
+    finishedBooks.forEach(b => logActivity('finished', b.title, 'Marked as completed!'));
+    startedBooks.forEach(b => logActivity('started', b.title, 'Started reading'));
+
+    if (finishedBooks.length > 0) {
+      triggerConfetti();
+      const label = finishedBooks.length === 1 ? `"${finishedBooks[0].title}"` : `${finishedBooks.length} books`;
+      showToast(`Congratulations on finishing ${label}!`);
+    } else {
+      showToast(`Moved ${bulkSelectedIds.length} books to chosen shelf.`);
+    }
+
     setBulkSelectedIds([]);
-  }, [books, bulkSelectedIds, userId, readingGoal, updateGoalCalculations, showToast]);
+  }, [books, bulkSelectedIds, userId, readingGoal, updateGoalCalculations, triggerConfetti, logActivity, showToast]);
 
   const bulkDeleteBooks = useCallback((() => {
     if (bulkSelectedIds.length === 0) return;
@@ -547,70 +601,103 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const dataValue = useMemo<DataContextType>(() => ({
+    user,
+    loginAsGuest,
+    loginUser,
+    logout,
+    books,
+    shelves,
+    readingGoal,
+    activities,
+    addBook,
+    bulkImportBooks,
+    updateBook,
+    removeBook,
+    moveBookToShelf,
+    updateReadingProgress,
+    createShelf,
+    renameShelf,
+    deleteShelf,
+    moveShelf,
+    updateReadingGoal,
+    clearReadingGoal,
+    bulkSelectedIds,
+    setBulkSelectedIds,
+    bulkMoveShelves,
+    bulkDeleteBooks,
+    bulkAddGenre,
+  }), [
+    user, loginAsGuest, loginUser, logout,
+    books, shelves, readingGoal, activities,
+    addBook, bulkImportBooks, updateBook, removeBook,
+    moveBookToShelf, updateReadingProgress,
+    createShelf, renameShelf, deleteShelf, moveShelf,
+    updateReadingGoal, clearReadingGoal,
+    bulkSelectedIds, setBulkSelectedIds,
+    bulkMoveShelves, bulkDeleteBooks, bulkAddGenre,
+  ]);
+
+  const uiValue = useMemo<UIContextType>(() => ({
+    activeView,
+    setActiveView,
+    activeShelfId,
+    setActiveShelfId,
+    selectedBook,
+    setSelectedBook,
+    isSearchModalOpen,
+    setIsSearchModalOpen,
+    isLibrarySearchOpen,
+    setIsLibrarySearchOpen,
+    isGoodreadsModalOpen,
+    setIsGoodreadsModalOpen,
+    isA11yModalOpen,
+    setIsA11yModalOpen,
+    isAuthModalOpen,
+    setIsAuthModalOpen,
+    isExportCardModalOpen,
+    setIsExportCardModalOpen,
+    toastMessage,
+    showToast,
+    triggerConfetti,
+    theme,
+    setTheme,
+    a11ySettings,
+    updateA11ySettings,
+  }), [
+    activeView, setActiveView, activeShelfId, setActiveShelfId,
+    selectedBook, setSelectedBook,
+    isSearchModalOpen, setIsSearchModalOpen,
+    isLibrarySearchOpen, setIsLibrarySearchOpen,
+    isGoodreadsModalOpen, setIsGoodreadsModalOpen,
+    isA11yModalOpen, setIsA11yModalOpen,
+    isAuthModalOpen, setIsAuthModalOpen,
+    isExportCardModalOpen, setIsExportCardModalOpen,
+    toastMessage, showToast, triggerConfetti,
+    theme, setTheme, a11ySettings, updateA11ySettings,
+  ]);
+
   return (
-    <AppContext.Provider
-      value={{
-        user,
-        loginAsGuest,
-        loginUser,
-        logout,
-        books,
-        shelves,
-        activeShelfId,
-        setActiveShelfId,
-        activeView,
-        setActiveView,
-        readingGoal,
-        updateReadingGoal,
-        clearReadingGoal,
-        theme,
-        setTheme,
-        a11ySettings,
-        updateA11ySettings,
-        activities,
-        addBook,
-        bulkImportBooks,
-        updateBook,
-        removeBook,
-        moveBookToShelf,
-        updateReadingProgress,
-        createShelf,
-        renameShelf,
-        deleteShelf,
-        moveShelf,
-        selectedBook,
-        setSelectedBook,
-        isSearchModalOpen,
-        setIsSearchModalOpen,
-        isLibrarySearchOpen,
-        setIsLibrarySearchOpen,
-        isGoodreadsModalOpen,
-        setIsGoodreadsModalOpen,
-        isA11yModalOpen,
-        setIsA11yModalOpen,
-        isAuthModalOpen,
-        setIsAuthModalOpen,
-        isExportCardModalOpen,
-        setIsExportCardModalOpen,
-        toastMessage,
-        showToast,
-        triggerConfetti,
-        bulkSelectedIds,
-        setBulkSelectedIds,
-        bulkMoveShelves,
-        bulkDeleteBooks,
-        bulkAddGenre
-      }}
-    >
-      {children}
-    </AppContext.Provider>
+    <UIContext.Provider value={uiValue}>
+      <DataContext.Provider value={dataValue}>
+        {children}
+      </DataContext.Provider>
+    </UIContext.Provider>
   );
 };
 
-export const useApp = (): AppContextType => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useApp must be used within an AppProvider');
-  }
-  return context;
+export const useAppData = (): DataContextType => {
+  const ctx = useContext(DataContext);
+  if (!ctx) throw new Error('useAppData must be used within AppProvider');
+  return ctx;
+};
+
+export const useAppUI = (): UIContextType => {
+  const ctx = useContext(UIContext);
+  if (!ctx) throw new Error('useAppUI must be used within AppProvider');
+  return ctx;
+};
+
+export const useApp = (): DataContextType & UIContextType => {
+  return { ...useAppData(), ...useAppUI() };
 };

@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
-import { Trophy, Calendar, BookOpen, Star, Sparkles, Share2, Flame, Award, Clock, ArrowUpRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Trophy, Calendar, BookOpen, Star, Sparkles, Share2, Award, ArrowUpRight } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useViewHeadingFocus } from '../hooks/useViewHeadingFocus';
+import { useYearInReviewData } from '../hooks/useYearInReviewData';
 import { BookCover } from './BookCover';
 
 export const YearInReview: React.FC = () => {
@@ -9,67 +10,20 @@ export const YearInReview: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<number>(() => new Date().getFullYear());
   const headingRef = useViewHeadingFocus<HTMLHeadingElement>([]);
 
-  // Years with at least one finished book, plus the current year
-  const availableYears = useMemo(() => {
-    const years = new Set<number>([new Date().getFullYear()]);
-    books.forEach((b) => {
-      if (b.dateRead) {
-        const year = parseInt(b.dateRead.slice(0, 4), 10);
-        if (!isNaN(year)) years.add(year);
-      }
-    });
-    return Array.from(years).sort((a, b) => b - a);
-  }, [books]);
-
-  // Only include books actually finished in the selected year
-  const readBooks = books.filter((b) => {
-    const isFinished = b.shelfId === 'read' || b.shelfId === 'favorites';
-    if (!isFinished) return false;
-    return !!b.dateRead && b.dateRead.startsWith(selectedYear.toString());
-  });
-
-  const totalBooks = readBooks.length;
-  const totalPages = readBooks.reduce((acc, b) => acc + (b.pageCount || 280), 0);
-  const ratedBooks = readBooks.filter((b) => b.rating && b.rating > 0);
-  const averageRating = ratedBooks.length > 0
-    ? (ratedBooks.reduce((acc, b) => acc + (b.rating || 0), 0) / ratedBooks.length).toFixed(1)
-    : null;
-
-  // Longest and shortest book
-  const sortedByPages = [...readBooks].filter(b => b.pageCount).sort((a, b) => (b.pageCount || 0) - (a.pageCount || 0));
-  const longestBook = sortedByPages[0] || null;
-  const shortestBook = sortedByPages[sortedByPages.length - 1] || null;
-
-  // Monthly breakdown
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const monthlyCounts = Array(12).fill(0);
-  readBooks.forEach((b) => {
-    if (b.dateRead) {
-      const parts = b.dateRead.split('-');
-      if (parts.length >= 2) {
-        const m = parseInt(parts[1], 10) - 1;
-        if (m >= 0 && m < 12) {
-          monthlyCounts[m]++;
-        }
-      }
-    }
-  });
-
-  const maxMonthCount = Math.max(...monthlyCounts, 1);
-
-  // Genre breakdown
-  const genreMap = new Map<string, number>();
-  readBooks.forEach((b) => {
-    (b.genres || ['Uncategorized']).forEach((g) => {
-      genreMap.set(g, (genreMap.get(g) || 0) + 1);
-    });
-  });
-
-  const sortedGenres = Array.from(genreMap.entries())
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
-
-  const topRated = readBooks.filter((b) => b.rating === 5).slice(0, 4);
+  const {
+    availableYears,
+    months,
+    totalBooks,
+    totalPages,
+    averageRating,
+    longestBook,
+    shortestBook,
+    monthlyCounts,
+    maxMonthCount,
+    genreCount,
+    sortedGenres,
+    topRated,
+  } = useYearInReviewData(books, selectedYear);
 
   return (
     <div id="year-in-review-view" className="max-w-5xl mx-auto py-4 px-4 sm:px-6 space-y-8 animate-fadeIn">
@@ -129,7 +83,7 @@ export const YearInReview: React.FC = () => {
             {totalBooks}
           </p>
           <p className="text-[11px] text-[var(--color-text-secondary)] mt-1">
-            Across {genreMap.size} distinct genres
+            Across {genreCount} distinct genres
           </p>
         </div>
 

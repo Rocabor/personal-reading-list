@@ -234,7 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
                     </span>
                   </button>
                   {/* Reorder controls (shown on hover/focus) */}
-                  <div className="hidden group-hover:flex flex-col items-center pr-1">
+                  <div className="hidden group-hover:flex group-focus-within:flex flex-col items-center pr-1">
                     <button
                       onClick={() => moveShelf(shelf.id, 'up')}
                       disabled={shelfIndex <= 0}

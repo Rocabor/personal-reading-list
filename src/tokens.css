@@ -220,3 +220,12 @@ html.motion-reduce *::after {
   transition-duration: 0s !important;
   animation-duration: 0s !important;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}

@@ -28,8 +28,7 @@ export const BookCard: React.FC<BookCardProps> = ({
     return (
       <div
         id={`book-card-${book.id}`}
-        onClick={() => setSelectedBook(book)}
-        className={`group relative flex items-center gap-4 p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs hover:shadow-md transition-all cursor-pointer select-none ${
+        className={`group relative flex items-center gap-4 p-3.5 sm:p-4 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs hover:shadow-md transition-all select-none ${
           isSelected
             ? 'bg-[var(--color-accent-subtle)] ring-2 ring-[var(--color-accent)]'
             : 'hover:border-[var(--color-accent)]/40'
@@ -67,11 +66,15 @@ export const BookCard: React.FC<BookCardProps> = ({
         {/* Info & Progress */}
         <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
           <div>
-            <h2
-              className="font-heading font-bold text-sm sm:text-base leading-snug text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors line-clamp-2"
-              title={book.title}
-            >
-              {book.title}
+            <h2 className="font-heading font-bold text-sm sm:text-base leading-snug text-[var(--color-text-primary)]">
+              <button
+                type="button"
+                onClick={() => setSelectedBook(book)}
+                className="text-left group-hover:text-[var(--color-accent)] transition-colors after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:rounded-2xl focus-visible:after:ring-2 focus-visible:after:ring-[var(--color-accent)]"
+                title={book.title}
+              >
+                <span className="line-clamp-2">{book.title}</span>
+              </button>
             </h2>
             <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 truncate">
               {book.author}
@@ -142,22 +145,24 @@ export const BookCard: React.FC<BookCardProps> = ({
           percentage={book.percentage}
           showProgress={book.shelfId === 'currently-reading'}
           size="md"
+          className="z-10"
           onClick={() => setSelectedBook(book)}
         />
       </div>
 
       {/* Book Info */}
-      <div
-        className="flex-1 flex flex-col justify-between cursor-pointer"
-        onClick={() => setSelectedBook(book)}
-      >
+      <div className="flex-1 flex flex-col justify-between">
         <div>
-          <h3
-            className="font-heading font-semibold text-sm leading-tight line-clamp-2 text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors"
-            title={book.title}
-          >
-            {book.title}
-          </h3>
+          <h2 className="font-heading font-semibold text-sm leading-tight">
+            <button
+              type="button"
+              onClick={() => setSelectedBook(book)}
+              className="text-left group-hover:text-[var(--color-accent)] transition-colors after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:rounded-lg focus-visible:after:ring-2 focus-visible:after:ring-[var(--color-accent)]"
+              title={book.title}
+            >
+              <span className="line-clamp-2">{book.title}</span>
+            </button>
+          </h2>
           <p className="text-[var(--color-text-secondary)] text-xs mt-0.5 line-clamp-1">
             {book.author}
           </p>

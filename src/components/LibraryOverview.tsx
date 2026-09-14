@@ -109,7 +109,7 @@ export const LibraryOverview: React.FC = () => {
             {currentlyReading.map((book) => (
               <div
                 key={book.id}
-                className="p-4 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs hover:border-[var(--color-accent)]/50 transition-colors flex flex-col justify-between"
+                className="group relative p-4 rounded-2xl bg-[var(--color-surface)] border border-[var(--color-border)] shadow-xs hover:border-[var(--color-accent)]/50 transition-colors flex flex-col justify-between"
               >
                 <div className="flex gap-4">
                   <BookCover
@@ -117,15 +117,19 @@ export const LibraryOverview: React.FC = () => {
                     author={book.author}
                     coverUrl={book.coverUrl}
                     size="sm"
-                    onClick={() => setSelectedBook(book)}
                   />
                   <div className="flex-1 min-w-0">
                     <h3
-                      onClick={() => setSelectedBook(book)}
-                      className="font-heading font-semibold text-sm text-[var(--color-text-primary)] hover:text-[var(--color-accent)] cursor-pointer truncate"
+                      className="font-heading font-semibold text-sm text-[var(--color-text-primary)] truncate"
                       title={book.title}
                     >
-                      {book.title}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedBook(book)}
+                        className="w-full text-left truncate group-hover:text-[var(--color-accent)] transition-colors after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:rounded-2xl focus-visible:after:ring-2 focus-visible:after:ring-[var(--color-accent)]"
+                      >
+                        <span className="block truncate">{book.title}</span>
+                      </button>
                     </h3>
                     <p className="text-xs text-[var(--color-text-secondary)] truncate">
                       {book.author}
@@ -183,8 +187,7 @@ export const LibraryOverview: React.FC = () => {
                   {previewItems.map((book) => (
                     <div
                       key={book.id}
-                      onClick={() => setSelectedBook(book)}
-                      className="group cursor-pointer flex flex-col items-center text-center p-2 rounded-xl hover:bg-[var(--color-bg-secondary)] transition-colors"
+                      className="group relative flex flex-col items-center text-center p-2 rounded-xl hover:bg-[var(--color-bg-secondary)] transition-colors"
                     >
                       <BookCover
                         title={book.title}
@@ -194,7 +197,14 @@ export const LibraryOverview: React.FC = () => {
                         className="mb-2"
                       />
                       <h3 className="font-heading font-semibold text-xs text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] line-clamp-1 w-full">
-                        {book.title}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedBook(book)}
+                          className="w-full text-left line-clamp-1 after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:rounded-lg focus-visible:after:ring-2 focus-visible:after:ring-[var(--color-accent)]"
+                          title={book.title}
+                        >
+                          <span className="line-clamp-1">{book.title}</span>
+                        </button>
                       </h3>
                       <p className="text-[11px] text-[var(--color-text-secondary)] line-clamp-1 w-full">
                         {book.author}

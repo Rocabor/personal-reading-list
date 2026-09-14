@@ -52,14 +52,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
 
   return (
     <header className="sticky top-0 z-30 w-full h-16 bg-[var(--color-bg-primary)]/85 backdrop-blur-md border-b border-[var(--color-border)] px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-3">
-      {/* Skip to Content Link for keyboard users */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-4 z-50 px-3 py-1.5 rounded-lg bg-[var(--color-accent)] text-[var(--color-accent-text)] text-xs font-semibold"
-      >
-        Skip to main content
-      </a>
-
       {/* Left side: Mobile hamburger & Brand / Add Book */}
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <button
@@ -123,7 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
         {/* Accessibility Modal Trigger */}
         <button
           onClick={() => setIsA11yModalOpen(true)}
-          className="hidden xs:inline-flex p-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] transition-colors"
+          className="inline-flex p-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] hover:bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] transition-colors"
           title="Accessibility preferences"
           aria-label="Accessibility preferences"
         >

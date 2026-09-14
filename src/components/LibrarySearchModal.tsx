@@ -163,40 +163,41 @@ export const LibrarySearchModal: React.FC = () => {
             filtered.map((b) => {
               const shelfName = shelves.find((s) => s.id === b.shelfId)?.name || b.shelfId;
               return (
-                <div
+                <button
                   key={b.id}
+                  type="button"
                   onClick={() => handleSelectBook(b)}
-                  className="flex items-center justify-between p-3 rounded-xl border border-[var(--color-border-subtle)] hover:bg-[var(--color-bg-secondary)] cursor-pointer transition-colors"
+                  className="w-full flex items-center justify-between p-3 rounded-xl border border-[var(--color-border-subtle)] hover:bg-[var(--color-bg-secondary)] cursor-pointer transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <BookCover title={b.title} author={b.author} coverUrl={b.coverUrl} size="sm" />
                     <div className="min-w-0">
-                      <h3 className="font-heading font-semibold text-sm text-[var(--color-text-primary)] truncate">
+                      <span className="block font-heading font-semibold text-sm text-[var(--color-text-primary)] truncate">
                         {b.title}
-                      </h3>
-                      <p className="text-xs text-[var(--color-text-secondary)] truncate">
+                      </span>
+                      <span className="block text-xs text-[var(--color-text-secondary)] truncate">
                         {b.author}
-                      </p>
+                      </span>
                       {b.notes && (
-                        <p className="text-[11px] text-[var(--color-text-tertiary)] italic truncate mt-0.5">
+                        <span className="block text-[11px] text-[var(--color-text-tertiary)] italic truncate mt-0.5">
                           "{b.notes}"
-                        </p>
+                        </span>
                       )}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 flex-shrink-0 ml-3">
                     {b.rating && (
-                      <div className="flex items-center gap-1 text-xs text-[var(--color-rating)] font-medium">
+                      <span className="flex items-center gap-1 text-xs text-[var(--color-rating)] font-medium">
                         <Star className="w-3.5 h-3.5 fill-[var(--color-rating)]" />
                         <span>{b.rating}</span>
-                      </div>
+                      </span>
                     )}
                     <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] font-medium">
                       {shelfName}
                     </span>
                   </div>
-                </div>
+                </button>
               );
             })
           )}

@@ -69,7 +69,7 @@ These are the product and design choices I made where the spec left room for int
 - **Navigation.** Desktop sidebar (overview, shelves, year in review, activity timeline) and a mobile top navbar; the landing page is the front door before you "Try as Guest".
 - **Book covers.** Real Open Library covers when available, with an auto-generated gradient cover fallback so the library always looks finished.
 - **Delight details.** Canvas confetti on goal completion, subtle motion transitions via `motion`, hover tilts on covers, and a shareable canvas-generated reading card.
-- **Accessibility first.** Full keyboard navigation and ARIA on modals, focus-visible rings, `prefers-reduced-motion` handling, and an accessibility settings modal for font size, reduced motion, and tint adjustments.
+- **Accessibility first.** Keyboard navigation across all views — every book detail entry point is a real button — proper ARIA on modals and live regions, focus-visible rings and managed focus, reduced-motion handling (system preference + in-app toggle), and an accessibility settings modal for font size, reduced motion, and tint adjustments.
 
 ---
 

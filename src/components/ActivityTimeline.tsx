@@ -114,13 +114,18 @@ export const ActivityTimeline: React.FC = () => {
                   </div>
 
                   {act.bookTitle && (
-                    <h2
-                      onClick={() => matchingBook && setSelectedBook(matchingBook)}
-                      className={`font-heading font-semibold text-sm text-[var(--color-text-primary)] ${
-                        matchingBook ? 'cursor-pointer hover:text-[var(--color-accent)] underline-offset-2' : ''
-                      }`}
-                    >
-                      {act.bookTitle}
+                    <h2 className="font-heading font-semibold text-sm text-[var(--color-text-primary)]">
+                      {matchingBook ? (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedBook(matchingBook)}
+                          className="text-left underline-offset-2 group-hover:text-[var(--color-accent)] hover:underline transition-colors after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:rounded-lg focus-visible:after:ring-2 focus-visible:after:ring-[var(--color-accent)]"
+                        >
+                          {act.bookTitle}
+                        </button>
+                      ) : (
+                        act.bookTitle
+                      )}
                     </h2>
                   )}
 

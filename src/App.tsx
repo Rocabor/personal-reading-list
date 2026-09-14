@@ -122,6 +122,14 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
+      {/* Skip to Content Link for keyboard users */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-4 z-50 px-3 py-1.5 rounded-lg bg-[var(--color-accent)] text-[var(--color-accent-text)] text-xs font-semibold"
+      >
+        Skip to main content
+      </a>
+
       {/* Desktop Sidebar */}
       <div key="sidebar-desktop" className="hidden md:block flex-shrink-0">
         <Sidebar />
@@ -220,18 +228,14 @@ const MainLayout: React.FC = () => {
       </Suspense>
 
       {/* Toast Notification */}
-      {toastMessage && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-6 right-6 z-50 animate-slideUp"
-        >
-          <div className="px-4 py-3 rounded-2xl bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-xl flex items-center gap-2.5 text-xs font-medium">
+      <div role="status" aria-live="polite" className="fixed bottom-6 right-6 z-50">
+        {toastMessage && (
+          <div className="px-4 py-3 rounded-2xl bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)] shadow-xl flex items-center gap-2.5 text-xs font-medium animate-slideUp">
             <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>{toastMessage}</span>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

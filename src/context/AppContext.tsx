@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { Book, Shelf, ReadingGoal, ActivityEvent, UserProfile, AccessibilitySettings, ShelfId } from '../types';
 import {
   getCurrentUser,
@@ -82,6 +82,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const [shelves, setShelves] = useState<Shelf[]>(() => getStoredShelves(userId));
   const [books, setBooks] = useState<Book[]>(() => getStoredBooks(userId, user?.isGuest ?? true));
+  const booksRef = useRef(books);
+  booksRef.current = books;
   const [readingGoal, setReadingGoal] = useState<ReadingGoal | null>(() => getStoredGoal(userId));
   const [activities, setActivities] = useState<ActivityEvent[]>(() => getStoredActivities(userId));
   const [theme, setThemeState] = useState<'light' | 'dark' | 'system'>(() => getThemePreference());
@@ -260,11 +262,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const bulkImportBooks = useCallback((incoming: Book[]) => {
     if (incoming.length === 0) return;
-    const updated = [...incoming, ...books];
+    const updated = [...incoming, ...booksRef.current];
+    booksRef.current = updated;
     setBooks(updated);
     saveStoredBooks(userId, updated);
     updateGoalCalculations(updated, readingGoal);
-  }, [books, userId, readingGoal, updateGoalCalculations]);
+  }, [userId, readingGoal, updateGoalCalculations]);
 
   const updateBook = useCallback((id: string, updates: Partial<Book>) => {
     const book = books.find(b => b.id === id);

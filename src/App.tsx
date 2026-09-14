@@ -4,8 +4,8 @@ import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { useFocusTrap } from './hooks/useFocusTrap';
 import { LayoutDashboard, Grid, CheckCircle, Loader2 } from 'lucide-react';
+import { LandingPage } from './components/LandingPage';
 
-const LandingPage = lazy(() => import('./components/LandingPage').then((m) => ({ default: m.LandingPage })));
 const LibraryOverview = lazy(() => import('./components/LibraryOverview').then((m) => ({ default: m.LibraryOverview })));
 const ShelfView = lazy(() => import('./components/ShelfView').then((m) => ({ default: m.ShelfView })));
 const YearInReview = lazy(() => import('./components/YearInReview').then((m) => ({ default: m.YearInReview })));
@@ -110,9 +110,7 @@ const MainLayout: React.FC = () => {
   if (!user) {
     return (
       <>
-        <Suspense fallback={<ViewFallback />}>
-          <LandingPage />
-        </Suspense>
+        <LandingPage />
         <Suspense fallback={null}>
           <AuthModal />
         </Suspense>

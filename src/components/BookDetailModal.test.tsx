@@ -81,4 +81,31 @@ describe('BookDetailModal shelf moves', () => {
       'false'
     );
   });
+
+  it('saves personal notes on blur and persists them to storage', async () => {
+    const user = userEvent.setup();
+    renderInApp(<Harness />);
+
+    await user.click(screen.getByRole('button', { name: 'Open details' }));
+    const textarea = await screen.findByLabelText('Personal Reading Notes & Thoughts');
+    await user.type(textarea, 'A favorite passage about the desert planet.');
+
+    await user.click(screen.getByRole('button', { name: 'Close book details' }));
+
+    const storedBooks = JSON.parse(localStorage.getItem('bookshelf_guest_user_books') || '[]');
+    expect(storedBooks[0].notes).toBe('A favorite passage about the desert planet.');
+  });
+
+  it('reopens with previously saved notes restored', async () => {
+    seedStorage({
+      books: [makeBook({ pageCount: 300, notes: 'Already jotted down.' })]
+    });
+    const user = userEvent.setup();
+    renderInApp(<Harness />);
+
+    await user.click(screen.getByRole('button', { name: 'Open details' }));
+    const textarea = await screen.findByLabelText('Personal Reading Notes & Thoughts');
+
+    expect(textarea).toHaveValue('Already jotted down.');
+  });
 });

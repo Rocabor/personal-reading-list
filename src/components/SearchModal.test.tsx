@@ -1,36 +1,20 @@
 // @vitest-environment jsdom
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SearchModal } from './SearchModal';
 import { useApp } from '../context/AppContext';
 import { seedStorage, renderInApp } from '../test/utils';
 import { SearchResultItem, searchOpenLibrary } from '../services/openLibrary';
 
-vi.mock('../services/openLibrary', () => ({
-  searchOpenLibrary: vi.fn(),
-  convertSearchResultToBook: (item: SearchResultItem, shelfId: string) => ({
-    id: `book-${item.id}`,
-    title: item.title,
-    author: item.author,
-    isbn13: item.isbn13,
-    isbn10: item.isbn10,
-    coverUrl: item.coverUrl,
-    pageCount: item.pageCount,
-    publishedDate: item.publishedDate,
-    genres: item.genres,
-    publisher: item.publisher,
-    description: item.description,
-    shelfId,
-    rating: null,
-    notes: '',
-    dateAdded: '2026-01-01',
-    currentPage: shelfId === 'currently-reading' ? 1 : undefined,
-    percentage: shelfId === 'read' || shelfId === 'favorites' ? 100 : 0,
-    sourceApiId: item.openLibraryKey
-  })
-}));
+vi.mock('../services/openLibrary', async (importOriginal) => {
+  const original = await importOriginal<typeof import('../services/openLibrary')>();
+  return {
+    ...original,
+    searchOpenLibrary: vi.fn()
+  };
+});
 
 const mockedSearch = vi.mocked(searchOpenLibrary);
 
@@ -66,6 +50,10 @@ beforeEach(() => {
   seedStorage({ books: [] });
 });
 
+afterEach(() => {
+  vi.useRealTimers();
+});
+
 describe('SearchModal', () => {
   it('searches the catalog and adds a book to the library', async () => {
     mockedSearch.mockResolvedValue([DUNE_RESULT]);
@@ -84,7 +72,26 @@ describe('SearchModal', () => {
   });
 
   it('debounces the request and passes the trimmed query to the provider', async () => {
+    vi.useFakeTimers();
     mockedSearch.mockResolvedValue([DUNE_RESULT]);
+    renderInApp(<Harness />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open search' }));
+    const input = screen.getByRole('textbox', { name: 'Search books to add' });
+    fireEvent.change(input, { target: { value: '  Dune  ' } });
+
+    expect(mockedSearch).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(449);
+    expect(mockedSearch).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(mockedSearch).toHaveBeenCalledTimes(1);
+    expect(mockedSearch).toHaveBeenCalledWith('Dune');
+  });
+
+  it('shows an alert with the provider error when the request fails', async () => {
+    mockedSearch.mockRejectedValue(new Error('unexpected network failure'));
     const user = userEvent.setup();
     renderInApp(<Harness />);
 
@@ -92,8 +99,8 @@ describe('SearchModal', () => {
     const input = await screen.findByRole('textbox', { name: 'Search books to add' });
     await user.type(input, 'Dune');
 
-    await waitFor(() => expect(mockedSearch).toHaveBeenCalledTimes(1));
-    expect(mockedSearch).toHaveBeenCalledWith('Dune');
+    expect(await screen.findByRole('alert')).toHaveTextContent('unexpected network failure');
+    expect(screen.queryByRole('heading', { name: 'Dune' })).not.toBeInTheDocument();
   });
 
   it('shows the provider state when nothing matches', async () => {

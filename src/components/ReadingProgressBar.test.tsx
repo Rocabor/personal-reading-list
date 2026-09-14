@@ -60,4 +60,43 @@ describe('ReadingProgressBar', () => {
     const progressbar = await screen.findByRole('progressbar', { name: /Reading progress/ });
     expect(progressbar).toHaveAttribute('aria-valuenow', '100');
   });
+
+  it('clamps progress above the page count and still finishes the book', async () => {
+    const user = userEvent.setup();
+    renderInApp(<ProgressHarness />);
+
+    await user.click(screen.getByRole('button', { name: 'Page 10 of 400' }));
+    const input = screen.getByLabelText('Current Page');
+    await user.clear(input);
+    await user.type(input, '1000');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    const progressbar = await screen.findByRole('progressbar', { name: /Reading progress/ });
+    expect(progressbar).toHaveAttribute('aria-valuenow', '100');
+  });
+
+  it('persists the finished book to storage and counts it toward the annual goal', async () => {
+    seedStorage({
+      books: [makeBook({ shelfId: 'currently-reading', pageCount: 400, currentPage: 10, percentage: 3 })],
+      goal: { year: 2026, targetCount: 24, completedCount: 0 }
+    });
+    const user = userEvent.setup();
+    renderInApp(<ProgressHarness />);
+
+    await user.click(screen.getByRole('button', { name: 'Page 10 of 400' }));
+    const input = screen.getByLabelText('Current Page');
+    await user.clear(input);
+    await user.type(input, '400');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    await screen.findByRole('progressbar', { name: /Reading progress/ });
+
+    const storedBooks = JSON.parse(localStorage.getItem('bookshelf_guest_user_books') || '[]');
+    expect(storedBooks[0]).toMatchObject({ shelfId: 'read', percentage: 100, currentPage: 400 });
+    expect(storedBooks[0].dateRead).toBeTruthy();
+
+    const storedGoal = JSON.parse(localStorage.getItem('bookshelf_guest_user_goal') || 'null');
+    expect(storedGoal).not.toBeNull();
+    expect(storedGoal.completedCount).toBe(1);
+  });
 });

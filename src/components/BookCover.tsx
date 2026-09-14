@@ -21,6 +21,7 @@ interface BookCoverProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   onClick?: () => void;
+  instantFallback?: boolean;
 }
 
 export const BookCover: React.FC<BookCoverProps> = ({
@@ -31,9 +32,11 @@ export const BookCover: React.FC<BookCoverProps> = ({
   showProgress = false,
   size = 'md',
   className = '',
-  onClick
+  onClick,
+  instantFallback = false
 }) => {
   const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const { a11ySettings } = useAppUI();
 
   const sizeClasses = {
@@ -69,13 +72,40 @@ export const BookCover: React.FC<BookCoverProps> = ({
       <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-gradient-to-r from-black/25 via-white/10 to-transparent pointer-events-none z-10" />
 
       {hasValidImage ? (
-        <img
-          src={coverSrc}
-          alt={`Cover of ${title} by ${author}`}
-          loading="lazy"
-          onError={() => setImageError(true)}
-          className="w-full h-full object-cover rounded-sm shadow-[var(--shadow-book)]"
-        />
+        <>
+          {/* Fallback instantáneo siempre presente como base, self-contained */}
+          <div
+            role="img"
+            aria-label={`Cover placeholder for ${title} by ${author}`}
+            aria-hidden={instantFallback ? 'true' : undefined}
+            className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#F5EFE6] via-[#ECE3D4] to-[#DDD2C0] dark:from-[#2B231D] dark:via-[#241C17] dark:to-[#1B1512] border border-[var(--color-border)] p-2.5 flex flex-col justify-between text-[var(--color-text-primary)] shadow-[var(--shadow-book)] rounded-sm"
+          >
+            <div className="border border-[var(--color-border-subtle)]/70 h-full p-2 flex flex-col justify-between">
+              <div>
+                <BookOpen className="w-3.5 h-3.5 text-[var(--color-accent)] mb-1 opacity-75" />
+                <p className="font-heading font-semibold leading-tight line-clamp-3 text-[var(--color-text-primary)]">
+                  {title}
+                </p>
+              </div>
+              <div className="mt-1 border-t border-[var(--color-border-subtle)] pt-1">
+                <p className="text-[var(--color-text-secondary)] font-medium text-[11px] line-clamp-2">
+                  {author}
+                </p>
+              </div>
+            </div>
+          </div>
+          <img
+            src={coverSrc}
+            alt={`Cover of ${title} by ${author}`}
+            loading={instantFallback ? 'eager' : 'lazy'}
+            fetchPriority={instantFallback ? 'high' : 'auto'}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageError(true)}
+            className={`absolute inset-0 w-full h-full object-cover rounded-sm shadow-[var(--shadow-book)] transition-opacity duration-300 ${
+              instantFallback && !imageLoaded ? 'opacity-0' : 'opacity-100'
+            }`}
+          />
+        </>
       ) : (
         /* Literary typography fallback cover */
         <div

@@ -133,6 +133,7 @@ export const LandingPage: React.FC = () => {
                     author={b.author}
                     coverUrl={b.coverUrl}
                     size="md"
+                    instantFallback
                   />
                 </div>
               ))}
